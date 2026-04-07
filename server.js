@@ -2442,6 +2442,7 @@ function createMailTransporter({ port, secure, requireTLS = false }) {
     host: SMTP_HOST,
     port,
     secure,
+    family: 4,
     requireTLS,
     connectionTimeout: 10000,
     greetingTimeout: 10000,
