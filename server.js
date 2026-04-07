@@ -2427,27 +2427,96 @@ function getMailTransporter() {
   }
 
   if (!mailTransporter) {
-    mailTransporter = nodemailer.createTransport({
-      host: SMTP_HOST,
+    mailTransporter = createMailTransporter({
       port: SMTP_PORT,
       secure: SMTP_SECURE,
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-      tls: {
-        servername: SMTP_HOST
-      },
-      lookup(hostname, _options, callback) {
-        dns.lookup(hostname, { family: 4, all: false }, callback);
-      },
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
-      }
+      requireTLS: !SMTP_SECURE
     });
   }
 
   return mailTransporter;
+}
+
+function createMailTransporter({ port, secure, requireTLS = false }) {
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port,
+    secure,
+    requireTLS,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+    tls: {
+      servername: SMTP_HOST
+    },
+    lookup(hostname, _options, callback) {
+      dns.lookup(hostname, { family: 4, all: false }, callback);
+    },
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS
+    }
+  });
+}
+
+function getMailErrorDetails(error) {
+  return [
+    error && error.code ? `code=${error.code}` : "",
+    error && error.command ? `command=${error.command}` : "",
+    error && error.responseCode ? `responseCode=${error.responseCode}` : "",
+    error && error.response ? `response=${error.response}` : "",
+    error && error.message ? `message=${error.message}` : ""
+  ].filter(Boolean).join(" | ");
+}
+
+function shouldRetryMailWithTlsFallback(error) {
+  if (SMTP_PORT !== 465 || !SMTP_SECURE) {
+    return false;
+  }
+
+  const retryableCodes = new Set([
+    "ESOCKET",
+    "ECONNECTION",
+    "ETIMEDOUT",
+    "ECONNRESET",
+    "EHOSTUNREACH",
+    "ENOTFOUND"
+  ]);
+
+  return retryableCodes.has(error && error.code);
+}
+
+async function sendMailWithFallback(message) {
+  const transporter = getMailTransporter();
+  if (!transporter) {
+    return { ok: false, reason: "mail-disabled" };
+  }
+
+  try {
+    await transporter.sendMail(message);
+    return { ok: true };
+  } catch (error) {
+    if (!shouldRetryMailWithTlsFallback(error)) {
+      return { ok: false, reason: "send-error", details: getMailErrorDetails(error) };
+    }
+
+    try {
+      const fallbackTransporter = createMailTransporter({
+        port: 587,
+        secure: false,
+        requireTLS: true
+      });
+      await fallbackTransporter.sendMail(message);
+      console.info("Correo enviado usando fallback SMTP 587/STARTTLS.");
+      return { ok: true };
+    } catch (fallbackError) {
+      return {
+        ok: false,
+        reason: "send-error",
+        details: `primary(${getMailErrorDetails(error)}) | fallback(${getMailErrorDetails(fallbackError)})`
+      };
+    }
+  }
 }
 
 function getTwilioClient() {
@@ -2615,6 +2684,7 @@ async function processThreeHoursWhatsappReminders() {
             p.telefono,
             p.correo,
             c.observacion,
+            c.created_at,
             TO_CHAR(c.fecha, 'YYYY-MM-DD') AS fecha,
             TO_CHAR(c.hora, 'HH24:MI') AS hora
      FROM citas c
@@ -2628,6 +2698,13 @@ async function processThreeHoursWhatsappReminders() {
   for (const appointment of result.rows) {
     const appointmentMs = localDateTimeToUtcMs(appointment.fecha, appointment.hora, CLINIC_UTC_OFFSET_HOURS);
     const reminderMs = appointmentMs - (3 * 60 * 60 * 1000);
+    const createdAtMs = new Date(appointment.created_at).getTime();
+
+    // Si la cita fue creada despues de la hora en que debia salir el recordatorio,
+    // no se envia el recordatorio inmediato para evitar duplicar el aviso inicial.
+    if (createdAtMs > reminderMs) {
+      continue;
+    }
 
     if (nowMs >= reminderMs && nowMs < appointmentMs) {
       const sendResult = await sendAppointmentReminderWhatsapp(appointment);
@@ -2651,11 +2728,6 @@ async function markReminderSent(appointmentId, type) {
 async function sendAppointmentConfirmationEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -2765,29 +2837,28 @@ async function sendAppointmentConfirmationEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Confirmacion de cita - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath)
-        ? [
-            {
-              filename: "logo.png",
-              path: logoPath,
-              cid: logoCid
-            }
-          ]
-        : []
-    });
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Confirmacion de cita - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath)
+      ? [
+          {
+            filename: "logo.png",
+            path: logoPath,
+            cid: logoCid
+          }
+        ]
+      : []
+  });
 
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo de confirmacion:", error.message);
-    return { ok: false, reason: "send-error" };
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo de confirmacion:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueAppointmentConfirmationEmail(payload) {
