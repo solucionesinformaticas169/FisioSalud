@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultas | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Consulta</p>
+            <h2>Reportes por rango de fechas</h2>
+          </div>
+          <span class="badge">Pacientes y sesiones</span>
+        </div>
+
+        <div class="grid report-grid">
+          <section class="report-card" id="consulta-citas">
+            <div class="report-card-head">
+              <p class="section-label">Consulta</p>
+              <h3>Consulta de Citas</h3>
+              <p class="report-card-subtitle">Verifica todas las citas agendadas dentro del rango de fechas seleccionado.</p>
+            </div>
+            <form id="web-appointments-form" class="report-form">
+              <div class="form-grid">
+                <label class="field">
+                  <span>Fecha inicial</span>
+                  <input type="date" id="web-start-date" required>
+                </label>
+                <label class="field">
+                  <span>Fecha final</span>
+                  <input type="date" id="web-end-date" required>
+                </label>
+              </div>
+              <div class="report-actions">
+                <button type="button" id="web-appointments-button" class="secondary-button">
+                  <span class="button-main">Consultar citas</span>
+                  <span class="button-sub">Por rango seleccionado</span>
+                </button>
+              </div>
+              <p id="web-report-status" class="form-message neutral lookup-message">Completa ambas fechas para consultar.</p>
+            </form>
+          </section>
+
+          <section class="report-card" id="consulta-sesiones">
+            <div class="report-card-head">
+              <p class="section-label">Consulta</p>
+              <h3>Consulta de Sesiones</h3>
+              <p class="report-card-subtitle">Agrupa los planes de sesiones por tipo de terapia y filtra por paciente cuando lo requieras.</p>
+            </div>
+            <form id="session-report-form" class="report-form">
+              <div class="form-grid">
+                <label class="field">
+                  <span>Fecha inicial</span>
+                  <input type="date" id="session-start-date" required>
+                </label>
+                <label class="field">
+                  <span>Fecha final</span>
+                  <input type="date" id="session-end-date" required>
+                </label>
+                <label class="field">
+                  <span>Cédula (opcional)</span>
+                  <input type="text" id="session-cedula" maxlength="10" inputmode="numeric" placeholder="Filtrar por paciente">
+                </label>
+              </div>
+              <div class="report-actions">
+                <button type="button" id="session-report-button" class="secondary-button">
+                  <span class="button-main">Consultar sesiones</span>
+                  <span class="button-sub">Agrupadas</span>
+                </button>
+              </div>
+              <p id="session-report-status" class="form-message neutral lookup-message">Filtra por fechas y opcionalmente por paciente.</p>
+            </form>
+          </section>
+        </div>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Citas</p>
+              <h3>Listado de citas agendadas</h3>
+            </div>
+            <span id="web-results-summary" class="badge subtle">Sin consulta</span>
+          </div>
+          <div id="web-appointments-results" class="results-container">
+            <p class="results-placeholder">Los resultados aparecerán aquí.</p>
+          </div>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Sesiones</p>
+              <h3>Listado de planes agrupados por tipo de terapia</h3>
+            </div>
+            <span id="session-results-summary" class="badge subtle">Sin consulta</span>
+          </div>
+          <div id="session-appointments-results" class="results-container">
+            <p class="results-placeholder">La información de sesiones aparecerá aquí.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="plan-reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "updatedAt": "2026-03-28T16:12:41.852Z",
+  "brand": {
+    "logoSrc": "/assets/logo.png",
+    "logoAlt": "Fisio Salud Clínica La Paz"
+  },
+  "popup": {
+    "enabled": true,
+    "title": "Bienestar que acompaña tu recuperación",
+    "text": "Agenda tu valoración, conoce nuestros programas de rehabilitación y descubre una experiencia más cercana, clara y profesional.",
+    "buttonLabel": "Agenda tu cita",
+    "imageSrc": "/assets/hero-4.jpg"
+  },
+  "carousel": [
+    {
+      "title": "Tratamiento integral de dolor de columna",
+      "caption": "Atención orientada a disminuir el dolor, recuperar movilidad y avanzar con seguridad en tu rehabilitación.",
+      "imageSrc": "/assets/hero-1.png"
+    },
+    {
+      "title": "Bienestar corporativo",
+      "caption": "Planes para equipos de trabajo que integran fisioterapia, prevención y acompañamiento funcional.",
+      "imageSrc": "/assets/hero-2.png"
+    },
+    {
+      "title": "Fisioterapia y kinesiología",
+      "caption": "Tratamientos para lesiones deportivas, pre cirugía y recuperación postoperatoria.",
+      "imageSrc": "/assets/hero-5.jpg"
+    },
+    {
+      "title": "Tratamiento para artritis",
+      "caption": "Alivio del dolor y mejora de la movilidad con acompañamiento terapéutico especializado.",
+      "imageSrc": "/assets/hero-6.jpg"
+    }
+  ],
+  "about": {
+    "title": "Rehabilitación con criterio clínico y cercanía humana",
+    "text": "Fisio Salud Clínica La Paz acompaña procesos de recuperación física, alivio del dolor y prevención funcional con una experiencia moderna para pacientes particulares, familias y empresas."
+  },
+  "contact": {
+    "phone": "0998545872",
+    "email": "fisiosalud.kj@gmail.com",
+    "address": "Viracochabamba 2-84, Clínica La Paz"
+  }
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguimiento de Sesiones | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Seguimiento</p>
+            <h2>Seguimiento de Sesiones</h2>
+          </div>
+          <span id="follow-up-head-badge" class="badge">Sin consulta</span>
+        </div>
+
+        <section class="report-card">
+          <div class="report-card-head">
+            <p class="section-label">Formulario</p>
+            <h3>Busca el avance de los pacientes</h3>
+            <p class="report-card-subtitle">Consulta por rango de fechas y visualiza de forma grafica cuantas sesiones tiene cada paciente, cuantas ya fueron atendidas y cuantas estan pendientes.</p>
+          </div>
+
+          <form id="follow-up-form" class="report-form">
+            <div class="form-grid">
+              <label class="field">
+                <span>Fecha inicial</span>
+                <input type="date" id="follow-up-start-date" required>
+              </label>
+              <label class="field">
+                <span>Fecha final</span>
+                <input type="date" id="follow-up-end-date" required>
+              </label>
+              <label class="field">
+                <span>Cedula (opcional)</span>
+                <input type="text" id="follow-up-cedula" maxlength="10" inputmode="numeric" placeholder="Filtrar por paciente">
+              </label>
+            </div>
+            <div class="report-actions">
+              <button type="submit" id="follow-up-button" class="secondary-button">
+                <span class="button-main">Consultar seguimiento</span>
+                <span class="button-sub">Sesiones atendidas y pendientes</span>
+              </button>
+            </div>
+            <p id="follow-up-status" class="form-message neutral lookup-message">Selecciona las fechas para visualizar el avance de las sesiones.</p>
+          </form>
+        </section>
+
+        <section id="follow-up-totals" class="follow-up-totals">
+          <article class="follow-up-total-card">
+            <span>Total de sesiones</span>
+            <strong id="total-sessions-value">0</strong>
+          </article>
+          <article class="follow-up-total-card is-success">
+            <span>Sesiones atendidas</span>
+            <strong id="attended-sessions-value">0</strong>
+          </article>
+          <article class="follow-up-total-card is-warning">
+            <span>Sesiones pendientes</span>
+            <strong id="pending-sessions-value">0</strong>
+          </article>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Pacientes</p>
+              <h3>Avance de sesiones por paciente</h3>
+            </div>
+            <span id="follow-up-summary" class="badge subtle">Sin consulta</span>
+          </div>
+          <div id="follow-up-results" class="results-container">
+            <p class="results-placeholder">Los resultados del seguimiento apareceran aqui.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="session-follow-up.js"></script>
+</body>
+</html>

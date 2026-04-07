@@ -1,0 +1,100 @@
+:root {
+  --lookup-panel-gap: 18px;
+}
+
+.lookup-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: var(--lookup-panel-gap);
+  align-items: flex-end;
+}
+
+.lookup-actions button {
+  width: 100%;
+  min-width: 0;
+}
+
+.lookup-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lookup-status {
+  margin: 18px 0 12px;
+}
+
+.results-card {
+  margin-top: 32px;
+}
+
+.result-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.result-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.result-actions button {
+  min-width: 140px;
+}
+
+.reschedule-panel {
+  margin-top: 4px;
+  padding: 18px;
+  border: 1px dashed rgba(22, 32, 51, 0.2);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.reschedule-panel.hidden {
+  display: none;
+}
+
+.reschedule-panel .panel-message {
+  margin-top: 12px;
+}
+
+.reschedule-panel .reschedule-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.reschedule-panel .reschedule-actions button {
+  min-width: 180px;
+}
+
+@media (max-width: 760px) {
+  .lookup-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lookup-actions {
+    justify-content: flex-start;
+  }
+
+  .reschedule-panel {
+    padding: 14px;
+  }
+
+  .reschedule-panel .reschedule-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
+
+  .result-actions button {
+    width: 100%;
+  }
+}

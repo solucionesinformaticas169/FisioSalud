@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingreso de Paciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Formulario</p>
+            <h2>Ingreso de paciente</h2>
+          </div>
+          <span class="badge">Registro inmediato</span>
+        </div>
+
+        <form id="patient-intake-form" novalidate>
+          <div class="grid">
+            <label class="field field-cedula">
+              <span>Cedula</span>
+              <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="Ingresa 10 digitos" required>
+              <small class="hint">La consulta se realiza automaticamente al completar la cedula.</small>
+              <small class="error" id="cedula-error"></small>
+            </label>
+
+            <div class="status-card">
+              <span class="status-label">Estado de busqueda</span>
+              <p id="lookup-message" class="lookup-message neutral">Ingresa una cedula para buscar al paciente.</p>
+            </div>
+
+            <label class="field">
+              <span>Nombre</span>
+              <input id="nombre" name="nombre" type="text" maxlength="40" autocomplete="off" placeholder="Nombres del paciente" required>
+              <small class="error" id="nombre-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Apellido</span>
+              <input id="apellido" name="apellido" type="text" maxlength="40" autocomplete="off" placeholder="Apellidos del paciente" required>
+              <small class="error" id="apellido-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Telefono</span>
+              <input id="telefono" name="telefono" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 digitos" required>
+              <small class="error" id="telefono-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Correo</span>
+              <input id="correo" name="correo" type="email" maxlength="80" autocomplete="off" placeholder="correo@dominio.com" required>
+              <small class="error" id="correo-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Fecha</span>
+              <input id="fecha-display" type="text" readonly>
+              <input id="fecha" name="fecha" type="hidden" required>
+              <small class="hint">Se registra automaticamente con la fecha actual.</small>
+              <small class="error" id="fecha-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Hora</span>
+              <input id="hora-display" type="text" readonly>
+              <input id="hora" name="hora" type="hidden" required>
+              <small class="hint">Se registra automaticamente con la hora actual.</small>
+              <small class="error" id="hora-error"></small>
+            </label>
+          </div>
+
+          <label class="field field-full">
+            <span>Observacion</span>
+            <textarea id="observacion" name="observacion" rows="4" maxlength="160" placeholder="Dato adicional del paciente"></textarea>
+            <small class="error" id="observacion-error"></small>
+          </label>
+
+          <div class="footer-bar">
+            <div class="form-message-wrap">
+              <span class="status-label">Resultado</span>
+              <p id="form-message" class="form-message neutral">Completa la informacion para registrar el ingreso.</p>
+            </div>
+
+            <button id="submit-button" type="submit">
+              <span class="button-main">Ingresar paciente</span>
+              <span class="button-sub">Guardar datos e ingreso</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="patient-intake.js"></script>
+</body>
+</html>

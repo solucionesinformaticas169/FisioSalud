@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fisio Salud | Clínica La Paz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <div id="popup-overlay" class="popup-overlay hidden">
+    <div class="popup-card">
+      <button id="popup-close" class="popup-close" type="button" aria-label="Cerrar ventana">&times;</button>
+      <div class="popup-visual">
+        <img id="popup-image" src="/assets/hero-4.jpg" alt="Promoción Fisio Salud">
+      </div>
+      <div class="popup-copy">
+        <p class="section-label">Destacado</p>
+        <h3 id="popup-title">Bienestar que acompana tu recuperacion</h3>
+        <p id="popup-text">Agenda tu valoracion y conoce nuestros programas de rehabilitacion.</p>
+        <a id="popup-button" class="hero-button primary" href="/agendamiento">Agenda tu cita</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clínica La Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="#inicio">Inicio</a>
+          <a href="#conocenos">Conócenos</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#contactanos">Contáctanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero-section">
+      <div class="site-shell hero-stage">
+        <div class="hero-copy">
+          <p class="section-label light">Atención de rehabilitación</p>
+          <h1>Rehabilitación especializada con respaldo clínico y cercanía humana.</h1>
+          <p class="hero-text hero-text-light">
+            Fisio Salud Clínica La Paz integra valoración, tratamiento y seguimiento funcional
+            para pacientes, familias y programas corporativos en una experiencia clara y confiable.
+          </p>
+          <div class="hero-actions">
+            <a class="hero-button primary" href="/agendamiento">Agenda tu cita</a>
+            <a class="hero-button ghost" href="#conocenos">Conócenos</a>
+          </div>
+        </div>
+
+        <div class="hero-carousel-card">
+          <div class="hero-carousel-head">
+            <span class="hero-chip">Clínica La Paz</span>
+            <div class="carousel-controls">
+              <button id="carousel-prev" type="button" class="carousel-arrow" aria-label="Anterior">&#8249;</button>
+              <button id="carousel-next" type="button" class="carousel-arrow" aria-label="Siguiente">&#8250;</button>
+            </div>
+          </div>
+
+          <div class="carousel-frame hero-carousel-frame">
+            <div id="carousel-track" class="carousel-track"></div>
+            <div id="carousel-dots" class="carousel-dots"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="conocenos" class="welcome-section">
+      <div class="site-shell welcome-grid">
+        <div class="welcome-image-shell">
+          <div class="welcome-media">
+            <img class="welcome-image" src="/assets/hero-3.jpg" alt="Atencion y seguimiento en rehabilitacion">
+          </div>
+          <div class="welcome-benefits-card">
+            <div class="experience-card">
+              <strong>Atencion</strong>
+              <span>clinica, funcional y personalizada</span>
+            </div>
+            <div class="benefit-list">
+              <div>
+                <strong>Valoracion profesional</strong>
+                <span>Analisis inicial para orientar mejor cada proceso de rehabilitacion.</span>
+              </div>
+              <div>
+                <strong>Seguimiento por sesiones</strong>
+                <span>Orden clinico y control terapeutico de cada paciente.</span>
+              </div>
+              <div>
+                <strong>Enfoque humano</strong>
+                <span>Acompanamiento claro, cercano y adaptado a cada necesidad.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <article class="welcome-copy">
+          <p class="section-label">Bienvenidos</p>
+          <h2 id="about-title">Fisio Salud Clinica La Paz</h2>
+          <p id="about-text" class="welcome-text">
+            Fisio Salud Clinica La Paz acompana procesos de recuperacion fisica, alivio del dolor
+            y prevencion funcional con una experiencia moderna para pacientes particulares, familias y empresas.
+          </p>
+          <div class="welcome-points">
+            <div>
+              <strong>Agenda web</strong>
+              <span>Un acceso publico claro para pacientes y nuevos visitantes.</span>
+            </div>
+            <div>
+              <strong>Seguimiento ordenado</strong>
+              <span>Ingreso de paciente y plan de sesiones para el trabajo clinico interno.</span>
+            </div>
+            <div>
+              <strong>Contenido editable</strong>
+              <span>El Home se puede administrar desde el rol Admin o SuperAdmin.</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="servicios" class="strengths-section">
+      <div class="site-shell">
+        <div class="strengths-head">
+          <div>
+            <p class="section-label light">Atencion medica de calidad</p>
+            <h2>Soluciones completas de rehabilitacion y bienestar.</h2>
+          </div>
+          <p>
+            Un modelo de atencion pensado para aliviar dolor, recuperar movilidad,
+            acompañar procesos terapeuticos y dar una imagen institucional solida desde el primer contacto.
+          </p>
+        </div>
+
+        <div class="strengths-grid">
+          <article class="strength-card">
+            <h3>Tecnologia y evaluacion</h3>
+            <p>Valoracion funcional y seguimiento organizado para cada proceso de recuperacion.</p>
+          </article>
+          <article class="strength-card">
+            <h3>Atencion personalizada</h3>
+            <p>Planes terapeuticos orientados a la necesidad del paciente y su evolucion diaria.</p>
+          </article>
+          <article class="strength-card">
+            <h3>Programas de rehabilitacion</h3>
+            <p>Agenda, control de sesiones y organizacion por recurso con enfoque clinico.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section">
+      <div class="site-shell">
+        <div class="section-title-row">
+          <div>
+            <p class="section-label">Servicios</p>
+            <h2>Areas de rehabilitacion y programas que podemos destacar</h2>
+          </div>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-tile">
+            <img src="/assets/hero-1.png" alt="Dolor de columna y movilidad">
+            <div class="service-copy">
+              <h3>Dolor de columna</h3>
+              <p>Atencion integral para aliviar dolor, recuperar movilidad y mejorar funcionalidad.</p>
+            </div>
+          </article>
+          <article class="service-tile">
+            <img src="/assets/hero-2.png" alt="Programas corporativos">
+            <div class="service-copy">
+              <h3>Programas corporativos</h3>
+              <p>Prevencion y bienestar para colaboradores con enfoque practico y acompanamiento.</p>
+            </div>
+          </article>
+          <article class="service-tile">
+            <img src="/assets/hero-6.jpg" alt="Rehabilitacion funcional y geriatrica">
+            <div class="service-copy">
+              <h3>Rehabilitacion funcional</h3>
+              <p>Seguimiento por sesiones, disponibilidad por recurso y atencion organizada.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section">
+      <div class="site-shell quote-grid">
+        <div class="quote-image-panel">
+          <img src="/assets/hero-5.jpg" alt="Programas y acompanamiento de bienestar">
+        </div>
+        <article class="quote-copy-panel">
+          <span class="quote-mark">“</span>
+          <p>
+            En Fisio Salud Clinica La Paz cuidamos cada proceso de recuperacion con atencion profesional,
+            seguimiento ordenado y una experiencia visual que transmite confianza desde el primer momento.
+          </p>
+          <strong>Fisio Salud Clinica La Paz</strong>
+        </article>
+      </div>
+    </section>
+
+    <section id="contactanos" class="contact-section">
+      <div class="site-shell footer-grid">
+        <article class="footer-brand-block">
+          <img class="footer-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+          <p>
+            Atencion profesional en rehabilitacion, dolor musculoesqueletico,
+            recuperacion funcional y programas orientados al bienestar.
+          </p>
+          <div class="social-follow">
+            <span>Siguenos en Facebook</span>
+            <a
+              class="social-link"
+              href="https://www.facebook.com/fisiolapaz"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Seguir a Fisio Salud Clinica La Paz en Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13.5 21V12.8H16.2L16.6 9.6H13.5V7.56C13.5 6.64 13.76 6 15.08 6H16.7V3.14C15.91 3.05 15.11 3 14.32 3C11.96 3 10.34 4.44 10.34 7.08V9.6H7.7V12.8H10.34V21H13.5Z"/>
+              </svg>
+              <span>Facebook</span>
+            </a>
+          </div>
+          <div class="contact-mini-list">
+            <div>
+              <span>Telefono</span>
+              <strong id="contact-phone">593-0998545872</strong>
+            </div>
+            <div>
+              <span>Correo</span>
+              <strong id="contact-email">contacto@fisiosalud.com</strong>
+            </div>
+            <div>
+              <span>Direccion</span>
+              <strong id="contact-address">Viracochabamba 2-84, Clinica La Paz</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="location-card">
+          <p class="section-label light">Donde estamos</p>
+          <h3>Clinica La Paz</h3>
+          <div class="map-panel">
+            <div class="map-label">
+              <strong>Ubicacion</strong>
+              <span>Viracochabamba 2-84, Clinica La Paz</span>
+            </div>
+            <iframe
+              class="map-embed"
+              title="Mapa Clinica La Paz"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?q=Viracochabamba%202-84%2C%20Clinica%20La%20Paz&t=&z=17&ie=UTF8&iwloc=&output=embed">
+            </iframe>
+          </div>
+          <a
+            class="map-link"
+            href="https://www.google.com/maps/search/?api=1&query=Viracochabamba+2-84%2C+Clinica+La+Paz"
+            target="_blank"
+            rel="noreferrer">
+            Abrir en Google Maps
+          </a>
+        </article>
+      </div>
+
+      <div class="site-shell footer-bottom">
+        <span>© 2026 Fisio Salud Clinica La Paz</span>
+        <a class="back-top" href="#inicio">Volver arriba</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="home.js"></script>
+</body>
+</html>

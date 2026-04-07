@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Sesiones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/node_modules/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Formulario</p>
+            <h2>Plan de sesiones</h2>
+          </div>
+          <span class="badge">Capacidad por recurso</span>
+        </div>
+
+        <form id="session-plan-form" novalidate>
+          <div class="grid">
+            <label class="field field-cedula">
+              <span>Cedula</span>
+              <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="Ingresa 10 digitos" required>
+              <small class="hint">La busqueda del paciente se realiza automaticamente.</small>
+              <small class="error" id="cedula-error"></small>
+            </label>
+
+            <div class="status-card">
+              <span class="status-label">Estado de busqueda</span>
+              <p id="lookup-message" class="lookup-message neutral">Ingresa una cedula para consultar al paciente.</p>
+            </div>
+
+            <label class="field">
+              <span>Nombre</span>
+              <input id="nombre" name="nombre" type="text" placeholder="Nombre del paciente" readonly required>
+              <small class="hint">Se completa automaticamente si el paciente existe.</small>
+              <small class="error" id="nombre-error"></small>
+            </label>
+
+            <label class="field field-full-grid">
+              <span>Diagnostico</span>
+              <input id="diagnostico" name="diagnostico" type="text" maxlength="100" autocomplete="off" placeholder="Diagnostico del paciente" required>
+              <small class="error" id="diagnostico-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Numero de sesiones</span>
+              <select id="numero-sesiones" name="numeroSesiones" required>
+                <option value="">Selecciona</option>
+                <option value="1">1 sesion</option>
+                <option value="2">2 sesiones</option>
+                <option value="3">3 sesiones</option>
+                <option value="4">4 sesiones</option>
+                <option value="5">5 sesiones</option>
+                <option value="6">6 sesiones</option>
+                <option value="7">7 sesiones</option>
+                <option value="8">8 sesiones</option>
+                <option value="9">9 sesiones</option>
+                <option value="10">10 sesiones</option>
+              </select>
+              <small class="error" id="numero-sesiones-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Fecha inicial</span>
+              <input id="fecha-inicial" name="fechaInicial" type="text" placeholder="Selecciona una fecha" autocomplete="off" required>
+              <small class="hint">Se consultan sesiones desde esta fecha en adelante.</small>
+              <small class="error" id="fecha-inicial-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Hora</span>
+              <select id="hora-inicial" name="horaInicial" required>
+                <option value="">Selecciona una hora</option>
+                <option value="08:00">08:00</option>
+                <option value="08:30">08:30</option>
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00">10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+                <option value="17:00">17:00</option>
+                <option value="17:30">17:30</option>
+                <option value="18:00">18:00</option>
+                <option value="18:30">18:30</option>
+              </select>
+              <small class="hint">Selecciona un bloque valido de 30 minutos.</small>
+              <small class="error" id="hora-inicial-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Tipo de terapia</span>
+              <select id="tipo-terapia" name="tipoTerapia" required>
+                <option value="">Selecciona una opcion</option>
+                <option value="CAMILLA">Camilla</option>
+                <option value="RODILLA_TOBILLO">Rodilla / Tobillo</option>
+                <option value="HOMBRO_CODO_MANO">Hombro / Codo / Mano</option>
+              </select>
+              <small class="hint">Capacidad por cada 30 minutos segun el recurso.</small>
+              <small class="error" id="tipo-terapia-error"></small>
+            </label>
+          </div>
+
+          <div class="actions-inline">
+            <button id="consult-button" type="button" class="secondary-button">
+              <span class="button-main">Consultar</span>
+              <span class="button-sub">Buscar sesiones cercanas</span>
+            </button>
+          </div>
+
+          <section class="results-card">
+            <div class="results-head">
+              <div>
+                <p class="section-label">Resultado</p>
+                <h3>Busqueda de sesiones</h3>
+              </div>
+              <span id="results-summary" class="badge subtle">Sin consulta</span>
+            </div>
+            <div id="results-container" class="results-container">
+              <p class="results-placeholder">Completa los datos y pulsa consultar para ver las sesiones mas cercanas disponibles.</p>
+            </div>
+          </section>
+
+          <label class="field field-full">
+            <span>Observacion</span>
+            <textarea id="observacion" name="observacion" rows="4" maxlength="160" placeholder="Dato adicional del plan" required></textarea>
+            <small class="error" id="observacion-error"></small>
+          </label>
+
+          <div class="footer-bar">
+            <div class="form-message-wrap">
+              <span class="status-label">Resultado</span>
+              <p id="form-message" class="form-message neutral">Consulta la disponibilidad y luego agenda el plan.</p>
+            </div>
+
+            <button id="submit-button" type="submit">
+              <span class="button-main">Agendar plan</span>
+              <span class="button-sub">Guardar sesiones seleccionadas</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="/node_modules/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="/node_modules/flatpickr/dist/l10n/es.js"></script>
+  <script src="plan-sesiones.js?v=20260326-lookup-fix"></script>
+  <script>
+    (function () {
+      const cedulaField = document.getElementById("cedula");
+      const nombreField = document.getElementById("nombre");
+      const lookupMessage = document.getElementById("lookup-message");
+      const consultButton = document.getElementById("consult-button");
+      const planForm = document.getElementById("session-plan-form");
+      const submitButton = document.getElementById("submit-button");
+      const numeroSesionesField = document.getElementById("numero-sesiones");
+      const fechaInicialField = document.getElementById("fecha-inicial");
+      const horaInicialField = document.getElementById("hora-inicial");
+      const tipoTerapiaField = document.getElementById("tipo-terapia");
+      const diagnosticoField = document.getElementById("diagnostico");
+      const observacionField = document.getElementById("observacion");
+      const resultsContainer = document.getElementById("results-container");
+      const resultsSummary = document.getElementById("results-summary");
+      const formMessage = document.getElementById("form-message");
+      if (!cedulaField || !nombreField || !lookupMessage) {
+        return;
+      }
+
+      let lastValue = "";
+
+      function resetInlineAvailability() {
+        if (resultsSummary) {
+          resultsSummary.textContent = "Sin consulta";
+          resultsSummary.className = "badge subtle";
+        }
+        if (resultsContainer) {
+          resultsContainer.innerHTML = "<p class=\"results-placeholder\">Completa los datos y pulsa consultar para ver las sesiones mas cercanas disponibles.</p>";
+        }
+      }
+
+      function resetInlineForm(currentCedula) {
+        resetInlineAvailability();
+        nombreField.value = "";
+        if (diagnosticoField) {
+          diagnosticoField.value = "";
+        }
+        if (numeroSesionesField) {
+          numeroSesionesField.value = "";
+        }
+        if (fechaInicialField) {
+          fechaInicialField.value = "";
+        }
+        if (horaInicialField) {
+          horaInicialField.value = "";
+        }
+        if (tipoTerapiaField) {
+          tipoTerapiaField.value = "";
+        }
+        if (observacionField) {
+          observacionField.value = "";
+        }
+        cedulaField.value = currentCedula;
+        formMessage.textContent = "Consulta la disponibilidad y luego agenda el plan.";
+        formMessage.className = "form-message neutral";
+      }
+
+      async function lookupPatient() {
+        const value = String(cedulaField.value || "").replace(/\D/g, "").slice(0, 10);
+        const previousValue = lastValue;
+        cedulaField.value = value;
+
+        if (previousValue && previousValue !== value) {
+          resetInlineForm(value);
+        } else {
+          resetInlineAvailability();
+        }
+
+        if (value.length !== 10) {
+          lastValue = "";
+          nombreField.value = "";
+          lookupMessage.textContent = "Ingresa una cedula para consultar al paciente.";
+          lookupMessage.className = "lookup-message neutral";
+          return;
+        }
+
+        if (value === lastValue) {
+          return;
+        }
+
+        lastValue = value;
+
+        try {
+          const response = await fetch(`/api/patients/${value}`);
+          const result = await response.json();
+
+          if (response.ok && result.exists) {
+            nombreField.value = `${result.patient.nombre || ""} ${result.patient.apellido || ""}`.trim();
+            lookupMessage.textContent = "Paciente encontrado. Nombre cargado automaticamente.";
+            lookupMessage.className = "lookup-message success";
+          } else {
+            nombreField.value = "";
+            lookupMessage.textContent = "Paciente no encontrado. La cedula debe existir para crear el plan.";
+            lookupMessage.className = "lookup-message warning";
+          }
+        } catch (_error) {
+          nombreField.value = "";
+          lookupMessage.textContent = "No se pudo consultar la base de datos.";
+          lookupMessage.className = "lookup-message error";
+        }
+      }
+
+      cedulaField.addEventListener("input", lookupPatient);
+      cedulaField.addEventListener("change", lookupPatient);
+      cedulaField.addEventListener("blur", lookupPatient);
+      cedulaField.addEventListener("paste", function (event) {
+        event.preventDefault();
+        cedulaField.value = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 10);
+        lookupPatient();
+      });
+
+      setInterval(function () {
+        const currentValue = String(cedulaField.value || "").replace(/\D/g, "").slice(0, 10);
+        if (currentValue !== lastValue && currentValue.length > 0) {
+          lookupPatient();
+        }
+      }, 300);
+
+      if (consultButton && numeroSesionesField && fechaInicialField && horaInicialField && tipoTerapiaField && resultsContainer && resultsSummary && formMessage) {
+        consultButton.addEventListener("click", async function () {
+          const cedula = String(cedulaField.value || "").replace(/\D/g, "").slice(0, 10);
+          const numeroSesiones = String(numeroSesionesField.value || "").trim();
+          const fechaInicial = String(fechaInicialField.value || "").trim();
+          const horaInicial = String(horaInicialField.value || "").trim();
+          const tipoTerapia = String(tipoTerapiaField.value || "").trim();
+
+          if (!cedula || !numeroSesiones || !fechaInicial || !horaInicial || !tipoTerapia || !nombreField.value.trim()) {
+            formMessage.textContent = "Completa los datos requeridos para consultar.";
+            formMessage.className = "form-message error";
+            return;
+          }
+
+          try {
+            const params = new URLSearchParams({
+              cedula: cedula,
+              numeroSesiones: numeroSesiones,
+              fechaInicial: fechaInicial,
+              horaInicial: horaInicial,
+              tipoTerapia: tipoTerapia
+            });
+
+            const response = await fetch(`/api/session-plans/availability?${params.toString()}`);
+            const result = await response.json();
+
+            if (!response.ok || !Array.isArray(result.sessions) || result.sessions.length === 0) {
+              resultsSummary.textContent = "Sin resultados";
+              resultsSummary.className = "badge subtle";
+              resultsContainer.innerHTML = "<p class=\"results-placeholder\">No hay resultados para mostrar.</p>";
+              formMessage.textContent = result.message || "No se pudo consultar la disponibilidad.";
+              formMessage.className = "form-message error";
+              return;
+            }
+
+            resultsSummary.textContent = `${result.sessions.length} sesiones sugeridas`;
+            resultsSummary.className = "badge";
+            resultsContainer.innerHTML = "";
+
+            result.sessions.forEach(function (session) {
+              const article = document.createElement("article");
+              article.className = "result-row";
+              article.dataset.date = session.date;
+
+              const title = document.createElement("div");
+              title.className = "result-main";
+              title.innerHTML = `<strong>Sesion ${session.sessionNumber}</strong><span>${session.weekdayLabel} ${session.dateLabel}</span><span>Cupos restantes: ${session.remainingCapacity ?? ""}</span>`;
+
+              const selectWrap = document.createElement("div");
+              selectWrap.className = "result-time";
+              const select = document.createElement("select");
+              select.className = "result-time-select";
+              (session.availableTimes || []).forEach(function (time) {
+                const option = document.createElement("option");
+                option.value = time;
+                option.textContent = time;
+                if (time === session.selectedTime) {
+                  option.selected = true;
+                }
+                select.appendChild(option);
+              });
+              selectWrap.appendChild(select);
+
+              article.appendChild(title);
+              article.appendChild(selectWrap);
+              resultsContainer.appendChild(article);
+            });
+
+            formMessage.textContent = "Disponibilidad consultada correctamente.";
+            formMessage.className = "form-message success";
+          } catch (_error) {
+            formMessage.textContent = "No se pudo conectar con el servidor.";
+            formMessage.className = "form-message error";
+          }
+        });
+      }
+
+      if (planForm && submitButton && diagnosticoField && observacionField) {
+        planForm.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+
+          const cedula = String(cedulaField.value || "").replace(/\D/g, "").slice(0, 10);
+          const numeroSesiones = String(numeroSesionesField.value || "").trim();
+          const fechaInicial = String(fechaInicialField.value || "").trim();
+          const horaInicial = String(horaInicialField.value || "").trim();
+          const tipoTerapia = String(tipoTerapiaField.value || "").trim();
+          const diagnostico = String(diagnosticoField.value || "").trim().toUpperCase();
+          const observacion = String(observacionField.value || "").trim().toUpperCase();
+          const resultRows = Array.from(resultsContainer.querySelectorAll(".result-row"));
+
+          document.getElementById("cedula-error").textContent = cedula ? "" : "La cedula es obligatoria.";
+          document.getElementById("nombre-error").textContent = nombreField.value.trim() ? "" : "Debes seleccionar una cedula de paciente existente.";
+          document.getElementById("diagnostico-error").textContent = diagnostico ? "" : "El diagnostico es obligatorio.";
+          document.getElementById("numero-sesiones-error").textContent = numeroSesiones ? "" : "Selecciona el numero de sesiones.";
+          document.getElementById("fecha-inicial-error").textContent = fechaInicial ? "" : "Selecciona una fecha inicial.";
+          document.getElementById("hora-inicial-error").textContent = horaInicial ? "" : "Selecciona una hora.";
+          document.getElementById("tipo-terapia-error").textContent = tipoTerapia ? "" : "Selecciona un tipo de terapia.";
+          document.getElementById("observacion-error").textContent = observacion ? "" : "La observacion es obligatoria.";
+
+          if (!cedula || !nombreField.value.trim() || !diagnostico || !numeroSesiones || !fechaInicial || !horaInicial || !tipoTerapia || !observacion) {
+            formMessage.textContent = "Llene todos los campos obligatorios.";
+            formMessage.className = "form-message error";
+            formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+
+          if (resultRows.length === 0) {
+            formMessage.textContent = "Debes consultar la disponibilidad antes de agendar el plan.";
+            formMessage.className = "form-message error";
+            formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+
+          const sesiones = resultRows.map(function (row, index) {
+            const timeSelect = row.querySelector(".result-time-select");
+            const titleText = row.querySelector(".result-main span");
+            const dateText = titleText ? titleText.textContent : "";
+            return {
+              sessionNumber: index + 1,
+              date: row.dataset.date || "",
+              time: timeSelect ? timeSelect.value : ""
+            };
+          });
+
+          if (sesiones.some(function (session) { return !session.date || !session.time; })) {
+            formMessage.textContent = "Consulta nuevamente la disponibilidad antes de agendar.";
+            formMessage.className = "form-message error";
+            formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+
+          submitButton.disabled = true;
+          submitButton.querySelector(".button-main").textContent = "Agendando...";
+
+          try {
+            const response = await fetch("/api/session-plans", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                cedula: cedula,
+                diagnostico: diagnostico,
+                numeroSesiones: Number(numeroSesiones),
+                fechaInicial: fechaInicial,
+                horaInicial: horaInicial,
+                tipoTerapia: tipoTerapia,
+                observacion: observacion,
+                sesiones: sesiones
+              })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+              formMessage.textContent = result.message || "No se pudo guardar el plan.";
+              formMessage.className = "form-message error";
+              formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+              return;
+            }
+
+            formMessage.textContent = "Agendado exitoso.";
+            formMessage.className = "form-message success";
+            formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (planForm) {
+              planForm.reset();
+            }
+            if (nombreField) {
+              nombreField.value = "";
+            }
+            if (resultsSummary) {
+              resultsSummary.textContent = "Sin consulta";
+              resultsSummary.className = "badge subtle";
+            }
+            if (resultsContainer) {
+              resultsContainer.innerHTML = "<p class=\"results-placeholder\">Completa los datos y pulsa consultar para ver las sesiones mas cercanas disponibles.</p>";
+            }
+            if (lookupMessage) {
+              lookupMessage.textContent = "Ingresa una cedula para consultar al paciente.";
+              lookupMessage.className = "lookup-message neutral";
+            }
+            window.setTimeout(function () {
+              formMessage.textContent = "Consulta la disponibilidad y luego agenda el plan.";
+              formMessage.className = "form-message neutral";
+            }, 5000);
+          } catch (_error) {
+            formMessage.textContent = "No se pudo conectar con el servidor.";
+            formMessage.className = "form-message error";
+            formMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+          } finally {
+            submitButton.disabled = false;
+            submitButton.querySelector(".button-main").textContent = "Agendar plan";
+          }
+        }, true);
+      }
+    }());
+  </script>
+</body>
+</html>

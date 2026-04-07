@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clínica La Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conócenos</a>
+          <a href="/#contactanos">Contáctanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-shell">
+      <article class="auth-panel glass-panel">
+        <a class="back-link" href="/">← Volver al Home</a>
+        <p class="section-label">Acceso al sistema</p>
+        <h1>Ingresa según tu rol</h1>
+        <p class="hero-text">Ingresa con un usuario del sistema para acceder según el rol que tenga asignado.</p>
+
+        <form id="login-form" class="auth-form" novalidate>
+          <label class="field">
+            <span>Usuario</span>
+            <input id="username" name="username" type="text" autocomplete="username" placeholder="username" required>
+          </label>
+
+          <label class="field">
+            <span>Contraseña</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
+          </label>
+
+          <p id="login-message" class="form-message neutral">Usa un usuario registrado en el sistema o las credenciales base de arranque.</p>
+
+          <button type="submit" class="hero-button primary auth-submit">Ingresar</button>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="shared-nav.js"></script>
+  <script>
+    (function () {
+      const form = document.getElementById("login-form");
+      const username = document.getElementById("username");
+      const password = document.getElementById("password");
+      const message = document.getElementById("login-message");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const result = await window.AppAuth.login(username.value, password.value);
+
+        if (!result.ok) {
+          message.textContent = result.message;
+          message.className = "form-message error";
+          return;
+        }
+
+        message.textContent = `Bienvenido ${result.session.name}.`;
+        message.className = "form-message success";
+        window.setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
+      });
+    }());
+  </script>
+</body>
+</html>

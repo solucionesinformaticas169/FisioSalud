@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Accesos | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group"><a href="/">Inicio</a></span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Auditoria</p>
+            <h2>Historial de accesos</h2>
+          </div>
+          <span id="history-summary" class="badge subtle">Sin carga</span>
+        </div>
+
+        <section class="report-card">
+          <div class="report-card-head">
+            <p class="section-label">Filtros</p>
+            <h3>Consulta de sesiones de acceso</h3>
+            <p class="report-card-subtitle">Revisa intentos exitosos y fallidos, navegador, sistema operativo, IP y estado actual de la sesion.</p>
+          </div>
+
+          <form id="history-filters-form" class="report-form">
+            <div class="form-grid compact-grid">
+              <label class="field">
+                <span>Usuario</span>
+                <input id="history-username" type="text" placeholder="usuario o nombre">
+              </label>
+              <label class="field">
+                <span>Fecha inicial</span>
+                <input id="history-start-date" type="date">
+              </label>
+              <label class="field">
+                <span>Fecha final</span>
+                <input id="history-end-date" type="date">
+              </label>
+              <label class="field">
+                <span>Estado</span>
+                <select id="history-status">
+                  <option value="">Todos</option>
+                  <option value="SUCCESS">Ingresos exitosos</option>
+                  <option value="FAILED">Ingresos fallidos</option>
+                  <option value="ACTIVE">Sesiones activas</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="report-actions">
+              <button id="history-search-button" type="submit" class="secondary-button">
+                <span class="button-main">Consultar historial</span>
+                <span class="button-sub">Filtra accesos registrados</span>
+              </button>
+              <button id="history-reset-button" type="button" class="ghost-button">Limpiar filtros</button>
+            </div>
+            <p id="history-status-message" class="form-message neutral">Cargando historial...</p>
+          </form>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Resultados</p>
+              <h3>Ultimos accesos registrados</h3>
+            </div>
+            <span id="history-results-count" class="badge subtle">0 registros</span>
+          </div>
+          <div id="history-list" class="access-history-list">
+            <p class="results-placeholder">Los accesos apareceran aqui.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("ADMIN");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="login-history.js"></script>
+</body>
+</html>

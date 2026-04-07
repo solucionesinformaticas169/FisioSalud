@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamiento Consulta Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/node_modules/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clínica La Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conócenos</a>
+          <a href="/#contactanos">Contáctanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Formulario</p>
+            <h2>Registrar nueva cita</h2>
+          </div>
+          <span class="badge">Atención de lunes a viernes</span>
+        </div>
+
+        <form id="appointment-form" novalidate>
+          <div class="grid">
+            <label class="field field-cedula">
+              <span>Cédula</span>
+              <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="Ingresa 10 dígitos" required>
+              <small class="hint">La consulta se realiza automáticamente al completar la cédula.</small>
+              <small class="error" id="cedula-error"></small>
+            </label>
+
+            <div class="status-card">
+              <span class="status-label">Estado de búsqueda</span>
+              <p id="lookup-message" class="lookup-message neutral">Ingresa una cédula para buscar al paciente.</p>
+            </div>
+
+            <label class="field">
+              <span>Nombre</span>
+              <input id="nombre" name="nombre" type="text" maxlength="40" autocomplete="off" placeholder="Nombres del paciente" required>
+              <small class="error" id="nombre-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Apellido</span>
+              <input id="apellido" name="apellido" type="text" maxlength="40" autocomplete="off" placeholder="Apellidos del paciente" required>
+              <small class="error" id="apellido-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Teléfono</span>
+              <input id="telefono" name="telefono" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 dígitos" required>
+              <small class="error" id="telefono-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Correo</span>
+              <input id="correo" name="correo" type="email" maxlength="80" autocomplete="off" placeholder="correo@dominio.com" required>
+              <small class="error" id="correo-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Fecha</span>
+              <input id="fecha" name="fecha" type="text" placeholder="Selecciona una fecha" autocomplete="off" required>
+              <div class="date-meta">
+                <span class="date-chip">Lunes a viernes</span>
+                <span id="date-preview" class="date-preview">Selecciona una fecha para ver horarios.</span>
+              </div>
+              <small class="hint">Horarios disponibles de lunes a viernes: 08:00 a 12:00 y 15:00 a 18:00.</small>
+              <small class="error" id="fecha-error"></small>
+            </label>
+
+            <label class="field">
+              <span>Hora</span>
+              <input id="hora" name="hora" type="hidden" required>
+              <div id="hour-options" class="hour-options">
+                <p class="hour-placeholder">Selecciona una fecha</p>
+              </div>
+              <small class="error" id="hora-error"></small>
+            </label>
+          </div>
+
+          <label class="field field-full">
+            <span>Observación</span>
+            <textarea id="observacion" name="observacion" rows="4" maxlength="160" placeholder="Dato adicional del paciente o de la consulta"></textarea>
+            <small class="error" id="observacion-error"></small>
+          </label>
+
+          <div class="footer-bar">
+            <div class="form-message-wrap">
+              <span class="status-label">Resultado</span>
+              <p id="form-message" class="form-message neutral">Completa la información para registrar la cita.</p>
+            </div>
+
+            <button id="submit-button" type="submit">
+              <span class="button-main">Agendar cita</span>
+              <span class="button-sub">Guardar paciente y reserva</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="shared-nav.js"></script>
+  <script src="/node_modules/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="/node_modules/flatpickr/dist/l10n/es.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

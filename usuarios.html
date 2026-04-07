@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuarios | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group"><a href="/">Inicio</a></span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Usuarios</p>
+            <h2>Administracion de usuarios</h2>
+          </div>
+          <span id="users-summary" class="badge subtle">Sin carga</span>
+        </div>
+
+        <div class="user-admin-grid">
+          <section class="results-card">
+            <div class="results-head">
+              <div>
+                <p class="section-label">Listado</p>
+                <h3>Usuarios registrados</h3>
+              </div>
+              <button id="reload-users-button" type="button" class="secondary-button">
+                <span class="button-main">Recargar</span>
+                <span class="button-sub">Actualizar listado</span>
+              </button>
+            </div>
+            <p id="users-status" class="form-message neutral">Cargando usuarios...</p>
+            <div id="users-list" class="user-list">
+              <p class="results-placeholder">Los usuarios apareceran aqui.</p>
+            </div>
+          </section>
+
+          <section class="report-card">
+            <div class="report-card-head">
+              <p class="section-label">Crear</p>
+              <h3>Nuevo usuario</h3>
+              <p class="report-card-subtitle">Crea un usuario del sistema y asigna su rol inicial.</p>
+            </div>
+            <form id="create-user-form" class="report-form">
+              <label class="field">
+                <span>Nombre</span>
+                <input id="new-user-name" type="text" placeholder="Nombre visible" required>
+              </label>
+              <label class="field">
+                <span>Usuario</span>
+                <input id="new-user-username" type="text" placeholder="usuario.sistema" required>
+              </label>
+              <label class="field">
+                <span>Rol</span>
+                <select id="new-user-role" required>
+                  <option value="USER">Usuario</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="SUPERADMIN">SuperAdmin</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Contrasena</span>
+                <input id="new-user-password" type="password" placeholder="Minimo 6 caracteres" required>
+              </label>
+              <button id="create-user-button" type="submit" class="secondary-button">
+                <span class="button-main">Crear usuario</span>
+                <span class="button-sub">Guardar y habilitar acceso</span>
+              </button>
+              <p id="create-user-status" class="form-message neutral">Completa los datos para crear un usuario.</p>
+            </form>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("SUPERADMIN");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="users-admin.js"></script>
+</body>
+</html>

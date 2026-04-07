@@ -1,0 +1,21 @@
+{
+  "name": "agendamiento-consulta-web",
+  "version": "1.0.0",
+  "description": "Formulario web de agendamiento con Express y PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "flatpickr": "^4.6.13",
+    "nodemailer": "^8.0.4",
+    "pg": "^8.13.3",
+    "twilio": "^5.13.1"
+  }
+}

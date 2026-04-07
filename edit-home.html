@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edicion del Home | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="site-shell edit-shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Formulario edicion</p>
+            <h2>Contenido visual del Home</h2>
+          </div>
+          <span class="badge">Solo Admin y SuperAdmin</span>
+        </div>
+
+        <div class="edit-guides">
+          <article class="guide-card">
+            <h3>Tamano ideal carrusel</h3>
+            <p><strong>1600 x 900 px</strong> en formato horizontal. El sistema adapta cualquier tamano con recorte elegante y texto inferior superpuesto.</p>
+          </article>
+          <article class="guide-card">
+            <h3>Tamano ideal popup</h3>
+            <p><strong>960 x 720 px</strong> o relacion 4:3. Puedes subir otras medidas: el sistema las ajusta automaticamente.</p>
+          </article>
+        </div>
+
+        <form id="site-content-form" class="edit-form" novalidate>
+          <section class="edit-section">
+            <div class="section-headline compact">
+              <div>
+                <p class="section-label">Logo</p>
+                <h3>Marca principal</h3>
+              </div>
+            </div>
+
+            <div class="edit-grid">
+              <label class="field">
+                <span>Alt del logo</span>
+                <input id="logo-alt" type="text" maxlength="120" placeholder="Descripcion accesible del logo">
+              </label>
+              <label class="field">
+                <span>Nuevo archivo del logo</span>
+                <input id="logo-file" type="file" accept="image/*">
+                <small class="hint">Puedes subir PNG, JPG, WEBP, SVG o AVIF.</small>
+              </label>
+            </div>
+            <div class="preview-panel">
+              <img id="logo-preview" alt="Preview del logo">
+            </div>
+          </section>
+
+          <section class="edit-section">
+            <div class="section-headline compact">
+              <div>
+                <p class="section-label">Pop up</p>
+                <h3>Mensaje destacado</h3>
+              </div>
+            </div>
+
+            <div class="edit-grid">
+              <label class="field">
+                <span>Titulo</span>
+                <input id="popup-title-input" type="text" maxlength="120" required>
+              </label>
+              <label class="field">
+                <span>Texto</span>
+                <textarea id="popup-text-input" rows="4" maxlength="240" required></textarea>
+              </label>
+              <label class="field">
+                <span>Texto del boton</span>
+                <input id="popup-button-label" type="text" maxlength="40" required>
+              </label>
+              <label class="field">
+                <span>Imagen del popup</span>
+                <input id="popup-file" type="file" accept="image/*">
+              </label>
+            </div>
+            <div class="preview-panel">
+              <img id="popup-preview" alt="Preview del popup">
+            </div>
+          </section>
+
+          <section class="edit-section">
+            <div class="section-headline compact">
+              <div>
+                <p class="section-label">Carrusel</p>
+                <h3>4 imagenes principales</h3>
+              </div>
+            </div>
+
+            <div id="carousel-editor" class="carousel-editor"></div>
+          </section>
+
+          <section class="edit-section">
+            <div class="section-headline compact">
+              <div>
+                <p class="section-label">Conocenos y contacto</p>
+                <h3>Textos base del Home</h3>
+              </div>
+            </div>
+
+            <div class="edit-grid">
+              <label class="field field-full-grid">
+                <span>Titulo Conocenos</span>
+                <input id="about-title-input" type="text" maxlength="140">
+              </label>
+              <label class="field field-full-grid">
+                <span>Texto Conocenos</span>
+                <textarea id="about-text-input" rows="4" maxlength="320"></textarea>
+              </label>
+              <label class="field">
+                <span>Telefono</span>
+                <input id="contact-phone-input" type="text" maxlength="30">
+              </label>
+              <label class="field">
+                <span>Correo</span>
+                <input id="contact-email-input" type="email" maxlength="100">
+              </label>
+              <label class="field field-full-grid">
+                <span>Direccion</span>
+                <input id="contact-address-input" type="text" maxlength="160">
+              </label>
+            </div>
+          </section>
+
+          <div class="footer-bar">
+            <div class="form-message-wrap">
+              <span class="status-label">Resultado</span>
+              <p id="edit-message" class="form-message neutral">Actualiza logo, popup, carrusel y textos del Home desde este panel.</p>
+            </div>
+            <button type="submit">
+              <span class="button-main">Guardar cambios</span>
+              <span class="button-sub">Actualizar contenido del Home</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="shared-nav.js"></script>
+  <script src="edit-home.js"></script>
+</body>
+</html>

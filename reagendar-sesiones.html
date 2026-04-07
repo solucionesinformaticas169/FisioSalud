@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reagendar Sesiones | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Gestion</p>
+            <h2>Reagendar sesiones</h2>
+          </div>
+          <span class="badge">Sesiones futuras</span>
+        </div>
+
+        <section class="report-card">
+          <div class="report-card-head">
+            <p class="section-label">Formulario</p>
+            <h3>Busca por cedula</h3>
+            <p class="report-card-subtitle">Consulta las sesiones futuras del paciente para reagendar o cancelar una sesion especifica.</p>
+          </div>
+
+          <form id="session-management-form" class="report-form">
+            <div class="form-grid">
+              <label class="field">
+                <span>Cedula</span>
+                <input type="text" id="management-cedula" maxlength="10" inputmode="numeric" placeholder="Ingresa 10 digitos" required>
+              </label>
+            </div>
+            <div class="report-actions">
+              <button type="submit" id="management-lookup-button" class="secondary-button">
+                <span class="button-main">Buscar sesiones</span>
+                <span class="button-sub">Futuras del paciente</span>
+              </button>
+            </div>
+            <p id="management-status" class="form-message neutral lookup-message">Ingresa una cedula para consultar sesiones futuras.</p>
+            <small id="management-error" class="error"></small>
+          </form>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Paciente</p>
+              <h3>Sesiones futuras para gestion</h3>
+            </div>
+            <span id="management-results-summary" class="badge subtle">Sin consulta</span>
+          </div>
+          <div id="management-results" class="results-container">
+            <p class="results-placeholder">Las sesiones futuras del paciente apareceran aqui.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="session-management.js"></script>
+</body>
+</html>
