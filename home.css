@@ -1370,6 +1370,20 @@
   color: rgba(255, 255, 255, 0.86);
 }
 
+.footer-bottom > span {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-bottom > span::after {
+  content: "Desarrollado por Soluciones Informaticas";
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 .back-top {
   color: #ffffff;
   font-weight: 700;
