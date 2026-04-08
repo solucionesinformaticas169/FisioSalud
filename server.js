@@ -2470,11 +2470,7 @@ function getMailErrorDetails(error) {
   ].filter(Boolean).join(" | ");
 }
 
-function shouldRetryMailWithTlsFallback(error) {
-  if (SMTP_PORT !== 465 || !SMTP_SECURE) {
-    return false;
-  }
-
+function shouldRetryMailWithFallback(error) {
   const retryableCodes = new Set([
     "ESOCKET",
     "ECONNECTION",
@@ -2487,6 +2483,28 @@ function shouldRetryMailWithTlsFallback(error) {
   return retryableCodes.has(error && error.code);
 }
 
+function getAlternateMailTransportConfig() {
+  if (SMTP_PORT === 465 && SMTP_SECURE) {
+    return {
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      label: "587/STARTTLS"
+    };
+  }
+
+  if (SMTP_PORT === 587 && !SMTP_SECURE) {
+    return {
+      port: 465,
+      secure: true,
+      requireTLS: false,
+      label: "465/SSL"
+    };
+  }
+
+  return null;
+}
+
 async function sendMailWithFallback(message) {
   const transporter = getMailTransporter();
   if (!transporter) {
@@ -2497,18 +2515,15 @@ async function sendMailWithFallback(message) {
     await transporter.sendMail(message);
     return { ok: true };
   } catch (error) {
-    if (!shouldRetryMailWithTlsFallback(error)) {
+    const alternateConfig = getAlternateMailTransportConfig();
+    if (!shouldRetryMailWithFallback(error) || !alternateConfig) {
       return { ok: false, reason: "send-error", details: getMailErrorDetails(error) };
     }
 
     try {
-      const fallbackTransporter = createMailTransporter({
-        port: 587,
-        secure: false,
-        requireTLS: true
-      });
+      const fallbackTransporter = createMailTransporter(alternateConfig);
       await fallbackTransporter.sendMail(message);
-      console.info("Correo enviado usando fallback SMTP 587/STARTTLS.");
+      console.info(`Correo enviado usando fallback SMTP ${alternateConfig.label}.`);
       return { ok: true };
     } catch (fallbackError) {
       return {
