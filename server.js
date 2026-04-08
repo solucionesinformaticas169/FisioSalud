@@ -77,7 +77,9 @@ const pool = new Pool({
 });
 let mailTransporter = null;
 let twilioClient = null;
-let remindersRunning = false;
+let dayBeforeEmailRemindersRunning = false;
+let whatsappRemindersRunning = false;
+let lastDayBeforeEmailRunDate = "";
 
 ensureSiteContent();
 
@@ -409,8 +411,12 @@ app.get("/api/health", async (_request, response) => {
 });
 
 setInterval(() => {
-  runReminderJobs().catch((error) => {
-    console.error("Error ejecutando recordatorios:", error.message);
+  runThreeHoursWhatsappReminders().catch((error) => {
+    console.error("Error ejecutando recordatorios de WhatsApp:", error.message);
+  });
+
+  runDayBeforeEmailReminders().catch((error) => {
+    console.error("Error ejecutando recordatorios de correo:", error.message);
   });
 
   cleanupStaleAccessSessions().catch((error) => {
@@ -419,8 +425,8 @@ setInterval(() => {
 }, SESSION_HEARTBEAT_INTERVAL_MS);
 
 setTimeout(() => {
-  runReminderJobs().catch((error) => {
-    console.error("Error ejecutando recordatorios iniciales:", error.message);
+  runThreeHoursWhatsappReminders().catch((error) => {
+    console.error("Error ejecutando recordatorios iniciales de WhatsApp:", error.message);
   });
 
   cleanupStaleAccessSessions().catch((error) => {
@@ -2718,30 +2724,47 @@ async function sendMetaTemplateMessage({ phone, templateName, parameters }) {
   }
 }
 
-async function runReminderJobs() {
-  if (remindersRunning) {
+async function runDayBeforeEmailReminders() {
+  if (dayBeforeEmailRemindersRunning) {
     return;
   }
 
-  remindersRunning = true;
+  dayBeforeEmailRemindersRunning = true;
 
   try {
     await processDayBeforeEmailReminders();
+  } finally {
+    dayBeforeEmailRemindersRunning = false;
+  }
+}
+
+async function runThreeHoursWhatsappReminders() {
+  if (whatsappRemindersRunning) {
+    return;
+  }
+
+  whatsappRemindersRunning = true;
+
+  try {
     await processThreeHoursWhatsappReminders();
   } finally {
-    remindersRunning = false;
+    whatsappRemindersRunning = false;
   }
 }
 
 async function processDayBeforeEmailReminders() {
   const now = new Date();
   const currentTime = formatTimeInTimeZone(now, CLINIC_TIME_ZONE);
+  const today = formatDateInTimeZone(now, CLINIC_TIME_ZONE);
 
-  if (currentTime < "19:00") {
+  if (currentTime !== "19:00") {
     return;
   }
 
-  const today = formatDateInTimeZone(now, CLINIC_TIME_ZONE);
+  if (lastDayBeforeEmailRunDate === today) {
+    return;
+  }
+
   const targetDate = addDaysToIsoDate(today, 1);
 
   const result = await pool.query(
@@ -2768,6 +2791,8 @@ async function processDayBeforeEmailReminders() {
       await markReminderSent(appointment.id, "email");
     }
   }
+
+  lastDayBeforeEmailRunDate = today;
 }
 
 async function processThreeHoursWhatsappReminders() {
