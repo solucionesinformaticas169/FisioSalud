@@ -44,6 +44,9 @@ const SMTP_SECURE = String(process.env.SMTP_SECURE || "").toLowerCase() === "tru
 const SMTP_USER = process.env.SMTP_USER || "";
 const SMTP_PASS = String(process.env.SMTP_PASS || "").replace(/\s+/g, "");
 const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER;
+const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
+const RESEND_FROM = process.env.RESEND_FROM || "";
+const RESEND_REPLY_TO = process.env.RESEND_REPLY_TO || "";
 const TWILIO_ENABLED = String(process.env.TWILIO_ENABLED || "").toLowerCase() === "true";
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || "";
@@ -2437,6 +2440,10 @@ function getMailTransporter() {
   return mailTransporter;
 }
 
+function isResendConfigured() {
+  return Boolean(RESEND_API_KEY && RESEND_FROM);
+}
+
 function createMailTransporter({ port, secure, requireTLS = false }) {
   return nodemailer.createTransport({
     host: SMTP_HOST,
@@ -2506,6 +2513,10 @@ function getAlternateMailTransportConfig() {
 }
 
 async function sendMailWithFallback(message) {
+  if (isResendConfigured()) {
+    return sendMailWithResend(message);
+  }
+
   const transporter = getMailTransporter();
   if (!transporter) {
     return { ok: false, reason: "mail-disabled" };
@@ -2532,6 +2543,64 @@ async function sendMailWithFallback(message) {
         details: `primary(${getMailErrorDetails(error)}) | fallback(${getMailErrorDetails(fallbackError)})`
       };
     }
+  }
+}
+
+function buildInlineHtmlForApi(html, attachments = []) {
+  if (!html || !attachments.length) {
+    return html;
+  }
+
+  let updatedHtml = html;
+  for (const attachment of attachments) {
+    if (!attachment || !attachment.cid || !attachment.path || !fs.existsSync(attachment.path)) {
+      continue;
+    }
+
+    const mimeType = getMimeTypeFromExtension(path.extname(attachment.path));
+    const base64Content = fs.readFileSync(attachment.path).toString("base64");
+    const dataUri = `data:${mimeType};base64,${base64Content}`;
+    updatedHtml = updatedHtml.replaceAll(`cid:${attachment.cid}`, dataUri);
+  }
+
+  return updatedHtml;
+}
+
+async function sendMailWithResend(message) {
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: RESEND_FROM,
+        to: Array.isArray(message.to) ? message.to : [message.to],
+        subject: message.subject,
+        text: message.text,
+        html: buildInlineHtmlForApi(message.html, message.attachments),
+        reply_to: RESEND_REPLY_TO || undefined
+      })
+    });
+
+    const responseText = await response.text();
+    if (!response.ok) {
+      return {
+        ok: false,
+        reason: "send-error",
+        details: `resend-status=${response.status} | response=${responseText}`
+      };
+    }
+
+    console.info(`Correo enviado con Resend: ${responseText}`);
+    return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: "send-error",
+      details: getMailErrorDetails(error)
+    };
   }
 }
 
