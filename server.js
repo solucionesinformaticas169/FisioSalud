@@ -2424,6 +2424,21 @@ function mimeTypeToExtension(mimeType) {
   return map[mimeType] || "png";
 }
 
+function extensionToMimeType(extension) {
+  const normalizedExtension = String(extension || "").toLowerCase();
+  const map = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".gif": "image/gif",
+    ".avif": "image/avif"
+  };
+
+  return map[normalizedExtension] || "image/png";
+}
+
 function getMailTransporter() {
   if (!SMTP_ENABLED || !SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
     return null;
@@ -2557,7 +2572,7 @@ function buildInlineHtmlForApi(html, attachments = []) {
       continue;
     }
 
-    const mimeType = getMimeTypeFromExtension(path.extname(attachment.path));
+    const mimeType = extensionToMimeType(path.extname(attachment.path));
     const base64Content = fs.readFileSync(attachment.path).toString("base64");
     const dataUri = `data:${mimeType};base64,${base64Content}`;
     updatedHtml = updatedHtml.replaceAll(`cid:${attachment.cid}`, dataUri);
