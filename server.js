@@ -80,6 +80,7 @@ let twilioClient = null;
 let dayBeforeEmailRemindersRunning = false;
 let whatsappRemindersRunning = false;
 let lastDayBeforeEmailRunDate = "";
+let lastWhatsappReminderSlotKey = "";
 
 ensureSiteContent();
 
@@ -2797,9 +2798,18 @@ async function processDayBeforeEmailReminders() {
 
 async function processThreeHoursWhatsappReminders() {
   const now = new Date();
-  const nowMs = now.getTime();
   const today = formatDateInTimeZone(now, CLINIC_TIME_ZONE);
-  const tomorrow = addDaysToIsoDate(today, 1);
+  const currentHour = Number(formatHourInTimeZone(now, CLINIC_TIME_ZONE));
+  const slot = getWhatsappReminderSlot(currentHour);
+
+  if (!slot) {
+    return;
+  }
+
+  const slotKey = `${today}-${slot.runHour}`;
+  if (lastWhatsappReminderSlotKey === slotKey) {
+    return;
+  }
 
   const result = await pool.query(
     `SELECT c.id,
@@ -2809,35 +2819,26 @@ async function processThreeHoursWhatsappReminders() {
             p.telefono,
             p.correo,
             c.observacion,
-            c.created_at,
             TO_CHAR(c.fecha, 'YYYY-MM-DD') AS fecha,
             TO_CHAR(c.hora, 'HH24:MI') AS hora
      FROM citas c
      INNER JOIN pacientes p ON p.cedula = c.cedula
-     WHERE c.fecha BETWEEN $1 AND $2
+     WHERE c.fecha = $1
        AND c.reminder_whatsapp_sent_at IS NULL
-     ORDER BY c.fecha ASC, c.hora ASC`,
-    [today, tomorrow]
+       AND c.hora >= $2::time
+       AND c.hora < $3::time
+     ORDER BY c.hora ASC`,
+    [today, slot.startTime, slot.endTime]
   );
 
   for (const appointment of result.rows) {
-    const appointmentMs = localDateTimeToUtcMs(appointment.fecha, appointment.hora, CLINIC_UTC_OFFSET_HOURS);
-    const reminderMs = appointmentMs - (3 * 60 * 60 * 1000);
-    const createdAtMs = new Date(appointment.created_at).getTime();
-
-    // Si la cita fue creada despues de la hora en que debia salir el recordatorio,
-    // no se envia el recordatorio inmediato para evitar duplicar el aviso inicial.
-    if (createdAtMs > reminderMs) {
-      continue;
-    }
-
-    if (nowMs >= reminderMs && nowMs < appointmentMs) {
-      const sendResult = await sendAppointmentReminderWhatsapp(appointment);
-      if (sendResult.ok) {
-        await markReminderSent(appointment.id, "whatsapp");
-      }
+    const sendResult = await sendAppointmentReminderWhatsapp(appointment);
+    if (sendResult.ok) {
+      await markReminderSent(appointment.id, "whatsapp");
     }
   }
+
+  lastWhatsappReminderSlotKey = slotKey;
 }
 
 async function markReminderSent(appointmentId, type) {
@@ -3972,6 +3973,16 @@ function formatTimeInTimeZone(date, timeZone) {
   return formatter.format(date);
 }
 
+function formatHourInTimeZone(date, timeZone) {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    hour: "2-digit",
+    hour12: false
+  });
+
+  return formatter.format(date);
+}
+
 function addDaysToIsoDate(value, days) {
   const [year, month, day] = value.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));
@@ -3982,10 +3993,21 @@ function addDaysToIsoDate(value, days) {
   return `${nextYear}-${nextMonth}-${nextDay}`;
 }
 
-function localDateTimeToUtcMs(dateStr, timeStr, utcOffsetHours) {
-  const [year, month, day] = String(dateStr).split("-").map(Number);
-  const [hour, minute] = String(timeStr).split(":").map(Number);
-  return Date.UTC(year, month - 1, day, hour - utcOffsetHours, minute || 0, 0, 0);
+function getWhatsappReminderSlot(runHour) {
+  const schedule = {
+    5: { runHour: 5, startTime: "08:00", endTime: "09:00" },
+    6: { runHour: 6, startTime: "09:00", endTime: "10:00" },
+    7: { runHour: 7, startTime: "10:00", endTime: "11:00" },
+    8: { runHour: 8, startTime: "11:00", endTime: "12:00" },
+    9: { runHour: 9, startTime: "12:00", endTime: "13:00" },
+    10: { runHour: 10, startTime: "13:00", endTime: "14:00" },
+    11: { runHour: 11, startTime: "14:00", endTime: "15:00" },
+    12: { runHour: 12, startTime: "15:00", endTime: "16:00" },
+    13: { runHour: 13, startTime: "16:00", endTime: "17:00" },
+    14: { runHour: 14, startTime: "17:00", endTime: "18:01" }
+  };
+
+  return schedule[runHour] || null;
 }
 
 function escapeHtml(value) {
