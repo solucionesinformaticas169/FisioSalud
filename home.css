@@ -522,6 +522,12 @@
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .carousel-caption {
+    display: none;
+  }
+}
+
 .carousel-controls {
   display: flex;
   align-items: center;
