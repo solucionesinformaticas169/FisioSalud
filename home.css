@@ -1384,10 +1384,19 @@
 
 .footer-bottom > span::after {
   content: "Desarrollado por Soluciones Informaticas";
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(123, 193, 255, 0.95);
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-bottom > span:hover::after {
+  color: #ffffff;
 }
 
 .back-top {
