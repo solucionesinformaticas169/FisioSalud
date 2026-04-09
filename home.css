@@ -1383,7 +1383,7 @@
 }
 
 .footer-bottom > span::after {
-  content: "Desarrollado por Soluciones Informaticas";
+  content: "Desarrollado by Soluciones Informaticas";
   color: rgba(123, 193, 255, 0.95);
   font-size: 0.82rem;
   font-weight: 600;
