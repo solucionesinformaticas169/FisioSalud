@@ -5,7 +5,6 @@ const crypto = require("crypto");
 require("dotenv").config();
 const express = require("express");
 const nodemailer = require("nodemailer");
-const twilio = require("twilio");
 const { Pool } = require("pg");
 
 const PORT = process.env.PORT || 3000;
@@ -47,10 +46,6 @@ const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER;
 const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
 const RESEND_FROM = process.env.RESEND_FROM || "";
 const RESEND_REPLY_TO = process.env.RESEND_REPLY_TO || "";
-const TWILIO_ENABLED = String(process.env.TWILIO_ENABLED || "").toLowerCase() === "true";
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
 const META_WHATSAPP_ENABLED = String(process.env.META_WHATSAPP_ENABLED || "").toLowerCase() === "true";
 const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v23.0";
 const META_WHATSAPP_PHONE_NUMBER_ID = process.env.META_WHATSAPP_PHONE_NUMBER_ID || "";
@@ -76,7 +71,6 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
 });
 let mailTransporter = null;
-let twilioClient = null;
 let dayBeforeEmailRemindersRunning = false;
 let whatsappRemindersRunning = false;
 let lastDayBeforeEmailRunDate = "";
@@ -2624,18 +2618,6 @@ async function sendMailWithResend(message) {
       details: getMailErrorDetails(error)
     };
   }
-}
-
-function getTwilioClient() {
-  if (!TWILIO_ENABLED || !TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
-    return null;
-  }
-
-  if (!twilioClient) {
-    twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-  }
-
-  return twilioClient;
 }
 
 function isMetaWhatsappConfigured() {
