@@ -2983,11 +2983,6 @@ async function sendAppointmentReminderEmail(payload) {
     return { ok: false, reason: "missing-email" };
   }
 
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
-  }
-
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
   const formattedDate = formatLongDate(payload.fecha);
   const observationText = payload.observacion || "Sin observacion registrada.";
@@ -3056,20 +3051,20 @@ async function sendAppointmentReminderEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Recordatorio de cita - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo recordatorio:", error.message);
-    return { ok: false, reason: "send-error" };
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Recordatorio de cita - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
+  });
+
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo recordatorio:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 async function sendAppointmentWhatsappMessage(payload) {
@@ -3106,11 +3101,6 @@ async function sendAppointmentReminderWhatsapp(payload) {
 async function sendAppointmentRescheduleEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -3221,29 +3211,28 @@ async function sendAppointmentRescheduleEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Cita reagendada - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath)
-        ? [
-            {
-              filename: "logo.png",
-              path: logoPath,
-              cid: logoCid
-            }
-          ]
-        : []
-    });
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Cita reagendada - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath)
+      ? [
+          {
+            filename: "logo.png",
+            path: logoPath,
+            cid: logoCid
+          }
+        ]
+      : []
+  });
 
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo de reagendamiento:", error.message);
-    return { ok: false, reason: "send-error" };
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo de reagendamiento:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueAppointmentRescheduleEmail(payload) {
@@ -3286,11 +3275,6 @@ function queueAppointmentRescheduleWhatsappMessage(payload) {
 async function sendAppointmentCancellationEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -3385,29 +3369,28 @@ async function sendAppointmentCancellationEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Cita cancelada - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath)
-        ? [
-            {
-              filename: "logo.png",
-              path: logoPath,
-              cid: logoCid
-            }
-          ]
-        : []
-    });
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Cita cancelada - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath)
+      ? [
+          {
+            filename: "logo.png",
+            path: logoPath,
+            cid: logoCid
+          }
+        ]
+      : []
+  });
 
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo de cancelacion:", error.message);
-    return { ok: false, reason: "send-error" };
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo de cancelacion:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueAppointmentCancellationEmail(payload) {
@@ -3442,11 +3425,6 @@ function queueAppointmentCancellationWhatsappMessage(payload) {
 async function sendSessionRescheduleEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -3528,20 +3506,20 @@ async function sendSessionRescheduleEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Sesion reagendada - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo de reagendamiento de sesion:", error.message);
-    return { ok: false, reason: "send-error" };
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Sesion reagendada - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
+  });
+
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo de reagendamiento de sesion:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueSessionRescheduleEmail(payload) {
@@ -3585,11 +3563,6 @@ function queueSessionRescheduleWhatsappMessage(payload) {
 async function sendSessionCancellationEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -3661,20 +3634,20 @@ async function sendSessionCancellationEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Sesion cancelada - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo de cancelacion de sesion:", error.message);
-    return { ok: false, reason: "send-error" };
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Sesion cancelada - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath) ? [{ filename: "logo.png", path: logoPath, cid: logoCid }] : []
+  });
+
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo de cancelacion de sesion:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueSessionCancellationEmail(payload) {
@@ -3715,11 +3688,6 @@ function queueSessionCancellationWhatsappMessage(payload) {
 async function sendSessionPlanConfirmationEmail(payload) {
   if (!payload.correo) {
     return { ok: false, reason: "missing-email" };
-  }
-
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { ok: false, reason: "mail-disabled" };
   }
 
   const patientName = `${payload.nombre} ${payload.apellido}`.trim();
@@ -3864,29 +3832,28 @@ async function sendSessionPlanConfirmationEmail(payload) {
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: payload.correo,
-      subject: "Plan de sesiones confirmado - Fisio Salud Clinica la Paz",
-      text,
-      html,
-      attachments: fs.existsSync(logoPath)
-        ? [
-            {
-              filename: "logo.png",
-              path: logoPath,
-              cid: logoCid
-            }
-          ]
-        : []
-    });
+  const result = await sendMailWithFallback({
+    from: SMTP_FROM,
+    to: payload.correo,
+    subject: "Plan de sesiones confirmado - Fisio Salud Clinica la Paz",
+    text,
+    html,
+    attachments: fs.existsSync(logoPath)
+      ? [
+          {
+            filename: "logo.png",
+            path: logoPath,
+            cid: logoCid
+          }
+        ]
+      : []
+  });
 
-    return { ok: true };
-  } catch (error) {
-    console.error("No se pudo enviar el correo del plan de sesiones:", error.message);
-    return { ok: false, reason: "send-error" };
+  if (!result.ok) {
+    console.error("No se pudo enviar el correo del plan de sesiones:", result.details || result.reason || "unknown");
   }
+
+  return result;
 }
 
 function queueSessionPlanConfirmationEmail(payload) {
