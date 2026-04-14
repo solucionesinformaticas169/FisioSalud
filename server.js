@@ -56,10 +56,13 @@ const META_TEMPLATE_LANGUAGE = process.env.META_TEMPLATE_LANGUAGE || "es";
 const META_TEMPLATE_CONFIRMACION_CITA = process.env.META_TEMPLATE_CONFIRMACION_CITA || "confirmacion_cita";
 const META_TEMPLATE_REAGENDAMIENTO_CITA = process.env.META_TEMPLATE_REAGENDAMIENTO_CITA || "reagendamiento_cita";
 const META_TEMPLATE_CANCELACION_CITA = process.env.META_TEMPLATE_CANCELACION_CITA || "cancelacion_cita1";
+const META_TEMPLATE_NOTIFICACION_REAGENDAMIENTO_ADMIN = process.env.META_TEMPLATE_NOTIFICACION_REAGENDAMIENTO_ADMIN || "notificacion_reagendamiento_admin";
+const META_TEMPLATE_NOTIFICACION_CANCELACION_ADMIN = process.env.META_TEMPLATE_NOTIFICACION_CANCELACION_ADMIN || "notificacion_cancelacion_admin";
 const META_TEMPLATE_RECORDATORIO_CITA = process.env.META_TEMPLATE_RECORDATORIO_CITA || "recordatorio_cita1";
 const META_TEMPLATE_CONFIRMACION_PLAN = process.env.META_TEMPLATE_CONFIRMACION_PLAN || "confirmacion_plan_sesiones1";
 const META_TEMPLATE_REAGENDAMIENTO_SESION = process.env.META_TEMPLATE_REAGENDAMIENTO_SESION || "reagendamiento_sesion";
 const META_TEMPLATE_CANCELACION_SESION = process.env.META_TEMPLATE_CANCELACION_SESION || "cancelacion_sesion";
+const APPOINTMENT_NOTIFY_WHATSAPP = process.env.APPOINTMENT_NOTIFY_WHATSAPP || "0998545872";
 const CLINIC_TIME_ZONE = process.env.CLINIC_TIME_ZONE || "America/Guayaquil";
 const CLINIC_UTC_OFFSET_HOURS = Number(process.env.CLINIC_UTC_OFFSET_HOURS || -5);
 const SESSION_HEARTBEAT_INTERVAL_MS = 60 * 1000;
@@ -3247,11 +3250,32 @@ async function sendAppointmentWhatsappMessage(payload) {
   });
 }
 
+async function sendAppointmentAdminWhatsappMessage(payload) {
+  if (!APPOINTMENT_NOTIFY_WHATSAPP) {
+    return { ok: false, reason: "missing-admin-phone" };
+  }
+
+  const patientName = `${payload.nombre} ${payload.apellido}`.trim();
+  const formattedDate = formatLongDate(payload.fecha);
+  const observationText = payload.observacion || "Sin observacion registrada.";
+
+  return sendMetaTemplateMessage({
+    phone: APPOINTMENT_NOTIFY_WHATSAPP,
+    templateName: META_TEMPLATE_CONFIRMACION_CITA,
+    parameters: [`Nueva cita web: ${patientName}`, formattedDate, payload.hora, observationText]
+  });
+}
+
 function queueAppointmentWhatsappMessage(payload) {
   setImmediate(async () => {
     const result = await sendAppointmentWhatsappMessage(payload);
     if (!result.ok) {
       console.error("La cita se guardo, pero el WhatsApp no pudo enviarse.", result.reason || "unknown");
+    }
+
+    const adminResult = await sendAppointmentAdminWhatsappMessage(payload);
+    if (!adminResult.ok && adminResult.reason !== "missing-admin-phone") {
+      console.error("La cita se guardo, pero el WhatsApp interno no pudo enviarse.", adminResult.reason || "unknown");
     }
   });
 }
@@ -3432,11 +3456,42 @@ async function sendAppointmentRescheduleWhatsappMessage(payload) {
   });
 }
 
+async function sendAppointmentRescheduleAdminWhatsappMessage(payload) {
+  if (!APPOINTMENT_NOTIFY_WHATSAPP) {
+    return { ok: false, reason: "missing-admin-phone" };
+  }
+
+  const patientName = `${payload.nombre} ${payload.apellido}`.trim();
+  const oldFormattedDate = formatLongDate(payload.oldFecha);
+  const newFormattedDate = formatLongDate(payload.fecha);
+  const observationText = payload.observacion || "Sin observacion registrada.";
+
+  return sendMetaTemplateMessage({
+    phone: APPOINTMENT_NOTIFY_WHATSAPP,
+    templateName: META_TEMPLATE_NOTIFICACION_REAGENDAMIENTO_ADMIN,
+    parameters: [
+      patientName,
+      payload.cedula,
+      oldFormattedDate,
+      payload.oldHora,
+      newFormattedDate,
+      payload.hora,
+      observationText,
+      payload.telefono || "Sin telefono"
+    ]
+  });
+}
+
 function queueAppointmentRescheduleWhatsappMessage(payload) {
   setImmediate(async () => {
     const result = await sendAppointmentRescheduleWhatsappMessage(payload);
     if (!result.ok) {
       console.error("La cita se reagendo, pero el WhatsApp no pudo enviarse.", result.reason || "unknown");
+    }
+
+    const adminResult = await sendAppointmentRescheduleAdminWhatsappMessage(payload);
+    if (!adminResult.ok && adminResult.reason !== "missing-admin-phone") {
+      console.error("La cita se reagendo, pero el WhatsApp interno no pudo enviarse.", adminResult.reason || "unknown");
     }
   });
 }
@@ -3582,11 +3637,39 @@ async function sendAppointmentCancellationWhatsappMessage(payload) {
   });
 }
 
+async function sendAppointmentCancellationAdminWhatsappMessage(payload) {
+  if (!APPOINTMENT_NOTIFY_WHATSAPP) {
+    return { ok: false, reason: "missing-admin-phone" };
+  }
+
+  const patientName = `${payload.nombre} ${payload.apellido}`.trim();
+  const formattedDate = formatLongDate(payload.fecha);
+  const observationText = payload.observacion || "Sin observacion registrada.";
+
+  return sendMetaTemplateMessage({
+    phone: APPOINTMENT_NOTIFY_WHATSAPP,
+    templateName: META_TEMPLATE_NOTIFICACION_CANCELACION_ADMIN,
+    parameters: [
+      patientName,
+      payload.cedula,
+      formattedDate,
+      payload.hora,
+      observationText,
+      payload.telefono || "Sin telefono"
+    ]
+  });
+}
+
 function queueAppointmentCancellationWhatsappMessage(payload) {
   setImmediate(async () => {
     const result = await sendAppointmentCancellationWhatsappMessage(payload);
     if (!result.ok) {
       console.error("La cita se cancelo, pero el WhatsApp no pudo enviarse.", result.reason || "unknown");
+    }
+
+    const adminResult = await sendAppointmentCancellationAdminWhatsappMessage(payload);
+    if (!adminResult.ok && adminResult.reason !== "missing-admin-phone") {
+      console.error("La cita se cancelo, pero el WhatsApp interno no pudo enviarse.", adminResult.reason || "unknown");
     }
   });
 }
