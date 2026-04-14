@@ -2,6 +2,7 @@ const followUpForm = document.getElementById("follow-up-form");
 const startDateInput = document.getElementById("follow-up-start-date");
 const endDateInput = document.getElementById("follow-up-end-date");
 const cedulaInput = document.getElementById("follow-up-cedula");
+const nameInput = document.getElementById("follow-up-name");
 const followUpStatus = document.getElementById("follow-up-status");
 const followUpButton = document.getElementById("follow-up-button");
 const followUpResults = document.getElementById("follow-up-results");
@@ -30,6 +31,10 @@ function initializeFollowUp() {
     }, 0);
   });
 
+  nameInput?.addEventListener("input", () => {
+    nameInput.value = sanitizeName(nameInput.value);
+  });
+
   followUpForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     await loadFollowUp();
@@ -48,6 +53,7 @@ async function loadFollowUp() {
   const startDate = startDateInput.value;
   const endDate = endDateInput.value;
   const cedula = cedulaInput.value.replace(/\D/g, "");
+  const name = sanitizeName(nameInput?.value || "");
 
   if (!startDate || !endDate) {
     setStatus("Debes seleccionar la fecha inicial y la fecha final.", "error");
@@ -66,6 +72,9 @@ async function loadFollowUp() {
     const query = new URLSearchParams({ startDate, endDate });
     if (cedula) {
       query.set("cedula", cedula);
+    }
+    if (name) {
+      query.set("name", name);
     }
 
     const response = await fetch(`/api/reports/session-follow-up?${query.toString()}`);
@@ -184,6 +193,13 @@ function toIsoDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function sanitizeName(value) {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
 }
 
 function escapeHtml(value) {

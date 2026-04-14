@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Vista diaria</p>
+            <h2>Dashboard</h2>
+          </div>
+          <span id="dashboard-date-badge" class="badge">Hoy</span>
+        </div>
+
+        <section class="report-card">
+          <div class="report-card-head">
+            <p class="section-label">Resumen</p>
+            <h3>Pacientes agendados del dia actual</h3>
+            <p class="report-card-subtitle">Visualiza rapidamente las sesiones por terapia y las citas registradas para hoy.</p>
+          </div>
+
+          <div id="dashboard-summary" class="dashboard-summary-grid">
+            <article class="dashboard-summary-card">
+              <span class="dashboard-summary-label">Citas del dia</span>
+              <strong>0</strong>
+            </article>
+            <article class="dashboard-summary-card">
+              <span class="dashboard-summary-label">Sesiones del dia</span>
+              <strong>0</strong>
+            </article>
+            <article class="dashboard-summary-card">
+              <span class="dashboard-summary-label">Camilla</span>
+              <strong>0</strong>
+            </article>
+            <article class="dashboard-summary-card">
+              <span class="dashboard-summary-label">Rodilla/Tobillo</span>
+              <strong>0</strong>
+            </article>
+            <article class="dashboard-summary-card">
+              <span class="dashboard-summary-label">Hombro/Codo/Mano</span>
+              <strong>0</strong>
+            </article>
+          </div>
+
+          <div class="report-actions">
+            <button type="button" id="dashboard-refresh-button" class="secondary-button">
+              <span class="button-main">Actualizar dashboard</span>
+              <span class="button-sub">Datos del dia actual</span>
+            </button>
+          </div>
+          <p id="dashboard-status" class="form-message neutral lookup-message">Cargando agenda del dia...</p>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Tablero</p>
+              <h3>Sesiones por hora y terapia</h3>
+            </div>
+            <span id="dashboard-board-badge" class="badge subtle">Sin datos</span>
+          </div>
+          <div class="dashboard-board-wrapper">
+            <div id="dashboard-board" class="dashboard-board"></div>
+          </div>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Complemento</p>
+              <h3>Citas y valoraciones del dia</h3>
+            </div>
+            <span id="dashboard-appointments-badge" class="badge subtle">Sin datos</span>
+          </div>
+          <div id="dashboard-appointments" class="results-container">
+            <p class="results-placeholder">Las citas del dia apareceran aqui.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

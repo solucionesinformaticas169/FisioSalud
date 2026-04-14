@@ -56,15 +56,19 @@
         <section class="report-card">
           <div class="report-card-head">
             <p class="section-label">Formulario</p>
-            <h3>Busca por cedula</h3>
-            <p class="report-card-subtitle">Consulta las sesiones futuras del paciente para reagendar o cancelar una sesion especifica.</p>
+            <h3>Busca por cedula o nombre</h3>
+            <p class="report-card-subtitle">Consulta las sesiones futuras del paciente para reagendar o cancelar una sesion especifica usando la cedula o el nombre del paciente.</p>
           </div>
 
           <form id="session-management-form" class="report-form">
             <div class="form-grid">
               <label class="field">
                 <span>Cedula</span>
-                <input type="text" id="management-cedula" maxlength="10" inputmode="numeric" placeholder="Ingresa 10 digitos" required>
+                <input type="text" id="management-cedula" maxlength="10" inputmode="numeric" placeholder="Ingresa 10 digitos">
+              </label>
+              <label class="field">
+                <span>Nombre o apellido</span>
+                <input type="text" id="management-name" maxlength="80" placeholder="Ingresa nombre del paciente">
               </label>
             </div>
             <div class="report-actions">
@@ -73,7 +77,7 @@
                 <span class="button-sub">Futuras del paciente</span>
               </button>
             </div>
-            <p id="management-status" class="form-message neutral lookup-message">Ingresa una cedula para consultar sesiones futuras.</p>
+            <p id="management-status" class="form-message neutral lookup-message">Ingresa una cedula o un nombre para consultar sesiones futuras.</p>
             <small id="management-error" class="error"></small>
           </form>
         </section>

@@ -1,28 +1,39 @@
 (() => {
   const form = document.getElementById("session-management-form");
   const cedulaInput = document.getElementById("management-cedula");
+  const nameInput = document.getElementById("management-name");
   const status = document.getElementById("management-status");
   const error = document.getElementById("management-error");
   const button = document.getElementById("management-lookup-button");
   const results = document.getElementById("management-results");
   const summary = document.getElementById("management-results-summary");
   const MAX_CEDULA_LENGTH = 10;
-  let lastCedula = "";
+  let lastSearch = { cedula: "", name: "" };
 
-  if (!form || !cedulaInput || !status || !results || !summary) {
+  if (!form || !cedulaInput || !nameInput || !status || !results || !summary) {
     return;
   }
 
   form.addEventListener("submit", handleLookup);
   cedulaInput.addEventListener("input", sanitizeCedulaInput);
   cedulaInput.addEventListener("paste", handleCedulaPaste);
+  nameInput.addEventListener("input", sanitizeNameInput);
 
   async function handleLookup(event) {
     event.preventDefault();
     clearError();
     const cedula = sanitizeCedula(cedulaInput.value);
+    const name = sanitizeName(nameInput.value);
 
-    if (!/^\d{10}$/.test(cedula)) {
+    if (!cedula && !name) {
+      showError("Ingresa una cedula o un nombre para buscar.");
+      setStatus("Ingresa una cedula o un nombre para consultar.", "warning");
+      updateSummary("Sin consulta", "subtle");
+      renderSessions([]);
+      return;
+    }
+
+    if (cedula && !/^\d{10}$/.test(cedula)) {
       showError("La cedula debe tener 10 digitos.");
       setStatus("Ingresa una cedula valida para buscar.", "warning");
       updateSummary("Sin consulta", "subtle");
@@ -30,11 +41,11 @@
       return;
     }
 
-    lastCedula = cedula;
-    await fetchAndRender(cedula);
+    lastSearch = { cedula, name };
+    await fetchAndRender(lastSearch);
   }
 
-  async function fetchAndRender(cedula, options = { disableButton: true }) {
+  async function fetchAndRender(search, options = { disableButton: true }) {
     if (options.disableButton && button) {
       button.disabled = true;
     }
@@ -42,7 +53,15 @@
     setStatus("Buscando sesiones futuras...", "neutral");
 
     try {
-      const response = await fetch(`/api/session-plans/patient/${cedula}`);
+      const params = new URLSearchParams();
+      if (search?.cedula) {
+        params.set("cedula", search.cedula);
+      }
+      if (search?.name) {
+        params.set("name", search.name);
+      }
+
+      const response = await fetch(`/api/session-plans/search?${params.toString()}`);
       const payload = await safeJson(response);
       if (!response.ok) {
         throw new Error(payload?.message || "No se pudo consultar las sesiones.");
@@ -52,7 +71,7 @@
       renderSessions(sessions);
       updateSummary(`${sessions.length} sesion${sessions.length === 1 ? "" : "es"}`, sessions.length ? "" : "subtle");
       setStatus(
-        sessions.length ? "Sesiones futuras encontradas." : "No hay sesiones futuras para esa cedula.",
+        sessions.length ? "Sesiones futuras encontradas." : "No hay sesiones futuras para ese criterio de busqueda.",
         sessions.length ? "success" : "warning"
       );
     } catch (lookupError) {
@@ -231,8 +250,8 @@
       setStatus(payload?.message || "Sesion reprogramada correctamente.", "success");
       clearPanel(panel);
       panel.classList.add("hidden");
-      if (lastCedula) {
-        await fetchAndRender(lastCedula, { disableButton: false });
+      if (lastSearch.cedula || lastSearch.name) {
+        await fetchAndRender(lastSearch, { disableButton: false });
       }
     } catch (rescheduleError) {
       setPanelMessage(message, rescheduleError.message || "No se pudo reprogramar la sesion.", "error");
@@ -262,8 +281,8 @@
       }
 
       setStatus(payload?.message || "Sesion cancelada correctamente.", "success");
-      if (lastCedula) {
-        await fetchAndRender(lastCedula, { disableButton: false });
+      if (lastSearch.cedula || lastSearch.name) {
+        await fetchAndRender(lastSearch, { disableButton: false });
       }
     } catch (cancelError) {
       setStatus(cancelError.message || "No se pudo cancelar la sesion.", "error");
@@ -331,6 +350,20 @@
 
   function sanitizeCedula(value) {
     return String(value || "").replace(/\D/g, "").slice(0, MAX_CEDULA_LENGTH);
+  }
+
+  function sanitizeNameInput() {
+    const sanitized = sanitizeName(nameInput.value);
+    if (nameInput.value !== sanitized) {
+      nameInput.value = sanitized;
+    }
+  }
+
+  function sanitizeName(value) {
+    return String(value || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 80);
   }
 
   function setStatus(text, level = "neutral") {

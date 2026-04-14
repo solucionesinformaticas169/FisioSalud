@@ -94,14 +94,18 @@ function buildPrimaryNav(session) {
   }
 
   ingresoItems.push(
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/plan-sesiones", label: "Plan de Sesiones" },
-    { href: "/consulta-cita", label: "Consulta tu cita" },
     { href: "/consulta-citas", label: "Consulta de citas" },
     { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
     { href: "/reagendar-sesiones", label: "Reagendar sesiones" },
     { href: "/atenciones", label: "Atenciones" },
     { href: "/seguimiento-sesiones", label: "Seguimiento de sesiones" }
   );
+
+  if (role === "ADMIN" || role === "SUPERADMIN") {
+    ingresoItems.splice(2, 0, { href: "/consulta-cita", label: "Consulta tu cita" });
+  }
 
   if (role === "ADMIN" || role === "SUPERADMIN") {
     ingresoItems.push({ href: "/edicion", label: "Edición" });

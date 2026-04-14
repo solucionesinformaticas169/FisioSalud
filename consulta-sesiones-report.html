@@ -74,6 +74,10 @@
                 <span>Cedula (opcional)</span>
                 <input type="text" id="session-cedula" maxlength="10" inputmode="numeric" placeholder="Filtrar por paciente">
               </label>
+              <label class="field">
+                <span>Nombre (opcional)</span>
+                <input type="text" id="session-name" maxlength="80" autocomplete="off" placeholder="Filtrar por nombre o apellido">
+              </label>
             </div>
             <div class="report-actions">
               <button type="button" id="session-report-button" class="secondary-button">
@@ -81,7 +85,7 @@
                 <span class="button-sub">Agrupadas</span>
               </button>
             </div>
-            <p id="session-report-status" class="form-message neutral lookup-message">Filtra por fechas y opcionalmente por paciente.</p>
+            <p id="session-report-status" class="form-message neutral lookup-message">Filtra por fechas y opcionalmente por cedula o nombre del paciente.</p>
           </form>
         </section>
 

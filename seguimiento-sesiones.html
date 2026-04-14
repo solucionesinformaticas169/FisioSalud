@@ -74,6 +74,10 @@
                 <span>Cedula (opcional)</span>
                 <input type="text" id="follow-up-cedula" maxlength="10" inputmode="numeric" placeholder="Filtrar por paciente">
               </label>
+              <label class="field">
+                <span>Nombre o apellido (opcional)</span>
+                <input type="text" id="follow-up-name" maxlength="80" autocomplete="off" placeholder="Filtrar por nombre del paciente">
+              </label>
             </div>
             <div class="report-actions">
               <button type="submit" id="follow-up-button" class="secondary-button">
@@ -81,7 +85,7 @@
                 <span class="button-sub">Sesiones atendidas y pendientes</span>
               </button>
             </div>
-            <p id="follow-up-status" class="form-message neutral lookup-message">Selecciona las fechas para visualizar el avance de las sesiones.</p>
+            <p id="follow-up-status" class="form-message neutral lookup-message">Selecciona las fechas y filtra opcionalmente por cedula o nombre del paciente.</p>
           </form>
         </section>
 

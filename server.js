@@ -496,20 +496,34 @@ app.get("/api/reports/sessions", async (request, response) => {
   const startDate = String(request.query.startDate || "").trim();
   const endDate = String(request.query.endDate || "").trim();
   const cedula = String(request.query.cedula || "").replace(/\D/g, "");
+  const name = String(request.query.name || "").trim().toUpperCase();
 
   const validationMessage = validateDateRange(startDate, endDate);
   if (validationMessage) {
     return response.status(400).json({ message: validationMessage });
   }
 
+  if (cedula && !/^\d{10}$/.test(cedula)) {
+    return response.status(400).json({ message: "La cedula debe tener 10 digitos." });
+  }
+
   try {
     const params = [startDate, endDate];
-    let cedulaClause = "";
+    const filters = [];
 
-    if (cedula.length === 10) {
-      cedulaClause = "AND plan.cedula = $3";
+    if (cedula) {
+      filters.push(`plan.cedula = $${params.length + 1}`);
       params.push(cedula);
     }
+
+    if (name) {
+      filters.push(`(CONCAT_WS(' ', p.nombre, p.apellido) ILIKE $${params.length + 1}
+        OR p.nombre ILIKE $${params.length + 1}
+        OR p.apellido ILIKE $${params.length + 1})`);
+      params.push(`%${name}%`);
+    }
+
+    const extraWhere = filters.length ? `AND ${filters.join(" AND ")}` : "";
 
     const result = await pool.query(
       `SELECT det.id,
@@ -524,7 +538,7 @@ app.get("/api/reports/sessions", async (request, response) => {
        INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
        INNER JOIN pacientes p ON p.cedula = plan.cedula
        WHERE det.fecha BETWEEN $1 AND $2
-         ${cedulaClause}
+         ${extraWhere}
        ORDER BY det.fecha ASC, det.hora ASC`,
       params
     );
@@ -625,6 +639,61 @@ app.get("/api/session-plans/patient/:cedula", async (request, response) => {
          AND det.fecha >= CURRENT_DATE
        ORDER BY det.fecha ASC, det.hora ASC, det.numero_sesion ASC`,
       [cedula]
+    );
+
+    return response.json({ sessions: result.rows });
+  } catch (error) {
+    return response.status(500).json({ message: "No se pudo consultar las sesiones del paciente." });
+  }
+});
+
+app.get("/api/session-plans/search", async (request, response) => {
+  const cedula = String(request.query.cedula || "").replace(/\D/g, "");
+  const name = String(request.query.name || "").trim().toUpperCase();
+
+  if (!cedula && !name) {
+    return response.status(400).json({ message: "Ingresa una cedula o un nombre para consultar." });
+  }
+
+  if (cedula && !/^\d{10}$/.test(cedula)) {
+    return response.status(400).json({ message: "La cedula debe tener 10 digitos." });
+  }
+
+  try {
+    const params = [];
+    const filters = ["det.fecha >= CURRENT_DATE"];
+
+    if (cedula) {
+      params.push(cedula);
+      filters.push(`plan.cedula = $${params.length}`);
+    }
+
+    if (name) {
+      params.push(`%${name}%`);
+      filters.push(`(
+        CONCAT_WS(' ', p.nombre, p.apellido) ILIKE $${params.length}
+        OR p.nombre ILIKE $${params.length}
+        OR p.apellido ILIKE $${params.length}
+      )`);
+    }
+
+    const result = await pool.query(
+      `SELECT det.id,
+              det.plan_id,
+              det.numero_sesion,
+              TO_CHAR(det.fecha, 'YYYY-MM-DD') AS fecha,
+              TO_CHAR(det.hora, 'HH24:MI') AS hora,
+              det.tipo_terapia,
+              plan.cedula,
+              p.nombre,
+              p.apellido,
+              plan.diagnostico
+       FROM plan_sesion_detalles det
+       INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
+       INNER JOIN pacientes p ON p.cedula = plan.cedula
+       WHERE ${filters.join("\n         AND ")}
+       ORDER BY p.apellido ASC, p.nombre ASC, det.fecha ASC, det.hora ASC, det.numero_sesion ASC`,
+      params
     );
 
     return response.json({ sessions: result.rows });
@@ -894,6 +963,7 @@ app.delete("/api/session-plans/sessions/:id", async (request, response) => {
 app.get("/api/reports/appointments", async (request, response) => {
   const startDate = String(request.query.startDate || "").trim();
   const endDate = String(request.query.endDate || "").trim();
+  const name = String(request.query.name || "").trim().toUpperCase();
 
   const validationMessage = validateDateRange(startDate, endDate);
   if (validationMessage) {
@@ -901,6 +971,18 @@ app.get("/api/reports/appointments", async (request, response) => {
   }
 
   try {
+    const params = [startDate, endDate];
+    const filters = [];
+
+    if (name) {
+      params.push(`%${name}%`);
+      filters.push(`(
+        CONCAT_WS(' ', p.nombre, p.apellido) ILIKE $${params.length}
+        OR p.nombre ILIKE $${params.length}
+        OR p.apellido ILIKE $${params.length}
+      )`);
+    }
+
     const result = await pool.query(
       `SELECT c.id, c.cedula, p.nombre, p.apellido, c.origen,
               TO_CHAR(c.fecha, 'YYYY-MM-DD') AS fecha, TO_CHAR(c.hora, 'HH24:MI') AS hora, c.observacion,
@@ -908,8 +990,9 @@ app.get("/api/reports/appointments", async (request, response) => {
        FROM citas c
        INNER JOIN pacientes p ON p.cedula = c.cedula
        WHERE c.fecha BETWEEN $1 AND $2
+         ${filters.length ? `AND ${filters.join("\n         AND ")}` : ""}
        ORDER BY c.fecha ASC, c.hora ASC`,
-      [startDate, endDate]
+      params
     );
 
     return response.json({ appointments: result.rows });
@@ -979,6 +1062,7 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
   const startDate = String(request.query.startDate || "").trim();
   const endDate = String(request.query.endDate || "").trim();
   const cedula = String(request.query.cedula || "").replace(/\D/g, "");
+  const name = String(request.query.name || "").trim().toUpperCase();
 
   const validationMessage = validateDateRange(startDate, endDate);
   if (validationMessage) {
@@ -991,11 +1075,20 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
 
   try {
     const params = [startDate, endDate];
-    let cedulaClause = "";
+    const filters = [];
 
     if (cedula) {
       params.push(cedula);
-      cedulaClause = "AND plan.cedula = $3";
+      filters.push(`plan.cedula = $${params.length}`);
+    }
+
+    if (name) {
+      params.push(`%${name}%`);
+      filters.push(`(
+        CONCAT_WS(' ', p.nombre, p.apellido) ILIKE $${params.length}
+        OR p.nombre ILIKE $${params.length}
+        OR p.apellido ILIKE $${params.length}
+      )`);
     }
 
     const result = await pool.query(
@@ -1014,7 +1107,7 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
        INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
        INNER JOIN pacientes p ON p.cedula = plan.cedula
        WHERE det.fecha BETWEEN $1 AND $2
-         ${cedulaClause}
+         ${filters.length ? `AND ${filters.join("\n         AND ")}` : ""}
        GROUP BY plan.id, plan.cedula, p.nombre, p.apellido, plan.diagnostico, det.tipo_terapia
        ORDER BY p.apellido ASC, p.nombre ASC, plan.id ASC`,
       params
@@ -1035,6 +1128,78 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
     return response.status(500).json({ message: "No se pudo consultar el seguimiento de sesiones." });
   }
 });
+
+app.get("/api/dashboard/today", async (_request, response) => {
+  const today = formatDateInTimeZone(new Date(), CLINIC_TIME_ZONE);
+
+  try {
+    const [appointmentsResult, sessionsResult] = await Promise.all([
+      pool.query(
+        `SELECT c.id,
+                c.cedula,
+                p.nombre,
+                p.apellido,
+                c.origen,
+                TO_CHAR(c.fecha, 'YYYY-MM-DD') AS fecha,
+                TO_CHAR(c.hora, 'HH24:MI') AS hora,
+                c.observacion,
+                c.estado_atencion
+         FROM citas c
+         INNER JOIN pacientes p ON p.cedula = c.cedula
+         WHERE c.fecha = $1
+         ORDER BY c.hora ASC, p.apellido ASC, p.nombre ASC`,
+        [today]
+      ),
+      pool.query(
+        `SELECT det.id,
+                det.numero_sesion,
+                TO_CHAR(det.fecha, 'YYYY-MM-DD') AS fecha,
+                TO_CHAR(det.hora, 'HH24:MI') AS hora,
+                det.tipo_terapia,
+                det.estado_atencion,
+                plan.cedula,
+                p.nombre,
+                p.apellido,
+                plan.diagnostico
+         FROM plan_sesion_detalles det
+         INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
+         INNER JOIN pacientes p ON p.cedula = plan.cedula
+         WHERE det.fecha = $1
+         ORDER BY det.hora ASC, det.tipo_terapia ASC, p.apellido ASC, p.nombre ASC`,
+        [today]
+      )
+    ]);
+
+    const countsByTherapy = {
+      CAMILLA: 0,
+      RODILLA_TOBILLO: 0,
+      HOMBRO_CODO_MANO: 0
+    };
+
+    sessionsResult.rows.forEach((session) => {
+      if (countsByTherapy[session.tipo_terapia] !== undefined) {
+        countsByTherapy[session.tipo_terapia] += 1;
+      }
+    });
+
+    return response.json({
+      date: today,
+      longDate: formatLongDate(today),
+      scheduleSlots: SESSION_SLOT_OPTIONS,
+      therapies: ["CAMILLA", "RODILLA_TOBILLO", "HOMBRO_CODO_MANO"],
+      appointments: appointmentsResult.rows,
+      sessions: sessionsResult.rows,
+      totals: {
+        appointments: appointmentsResult.rows.length,
+        sessions: sessionsResult.rows.length,
+        byTherapy: countsByTherapy
+      }
+    });
+  } catch (error) {
+    return response.status(500).json({ message: "No se pudo consultar el dashboard del dia." });
+  }
+});
+
 app.get("/api/appointments/available-hours", async (request, response) => {
   const { date } = request.query;
 
@@ -1566,6 +1731,10 @@ app.get("/consulta-cita", (_request, response) => {
 
 app.get("/consulta-citas", (_request, response) => {
   response.sendFile(path.join(__dirname, "consulta-citas-report.html"));
+});
+
+app.get("/dashboard", (_request, response) => {
+  response.sendFile(path.join(__dirname, "dashboard.html"));
 });
 
 app.get("/consulta-sesiones", (_request, response) => {

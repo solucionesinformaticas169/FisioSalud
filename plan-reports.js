@@ -3,9 +3,11 @@
   const sessionForm = document.getElementById("session-report-form");
   const webStartDate = document.getElementById("web-start-date");
   const webEndDate = document.getElementById("web-end-date");
+  const webName = document.getElementById("web-name");
   const sessionStartDate = document.getElementById("session-start-date");
   const sessionEndDate = document.getElementById("session-end-date");
   const sessionCedula = document.getElementById("session-cedula");
+  const sessionName = document.getElementById("session-name");
 
   const webResults = document.getElementById("web-appointments-results");
   const sessionResults = document.getElementById("session-appointments-results");
@@ -27,6 +29,7 @@
   function handleWebReport() {
     const startDate = String(webStartDate?.value || "").trim();
     const endDate = String(webEndDate?.value || "").trim();
+    const name = sanitizeName(webName?.value || "");
 
     if (!validateDates(startDate, endDate, webStatus)) {
       updateSummary(webSummary, "Sin consulta", "subtle");
@@ -34,7 +37,12 @@
       return;
     }
 
-    fetchReport("/api/reports/appointments", { startDate, endDate })
+    const params = { startDate, endDate };
+    if (name) {
+      params.name = name;
+    }
+
+    fetchReport("/api/reports/appointments", params)
       .then((result) => {
         const appointments = Array.isArray(result.appointments) ? result.appointments : [];
         renderWebResults(appointments);
@@ -52,6 +60,7 @@
     const startDate = String(sessionStartDate?.value || "").trim();
     const endDate = String(sessionEndDate?.value || "").trim();
     const cedula = sanitizeCedula(sessionCedula?.value || "");
+    const name = sanitizeName(sessionName?.value || "");
 
     if (!validateDates(startDate, endDate, sessionStatus)) {
       updateSummary(sessionSummary, "Sin consulta", "subtle");
@@ -62,6 +71,9 @@
     const params = { startDate, endDate };
     if (cedula.length === 10) {
       params.cedula = cedula;
+    }
+    if (name) {
+      params.name = name;
     }
 
     fetchReport("/api/reports/sessions", params)
@@ -238,6 +250,10 @@ function renderSessionResults(sessions) {
 
   function sanitizeCedula(value) {
     return String(value || "").replace(/\D/g, "").slice(0, 10);
+  }
+
+  function sanitizeName(value) {
+    return String(value || "").trim().replace(/\s+/g, " ").slice(0, 80);
   }
 
   function setStatus(element, text, level) {

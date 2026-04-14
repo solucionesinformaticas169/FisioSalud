@@ -57,7 +57,7 @@
           <div class="report-card-head">
             <p class="section-label">Formulario</p>
             <h3>Busca por rango de fechas</h3>
-            <p class="report-card-subtitle">Verifica todas las citas agendadas dentro del rango de fechas seleccionado.</p>
+            <p class="report-card-subtitle">Verifica todas las citas agendadas dentro del rango de fechas seleccionado y filtra opcionalmente por nombre del paciente.</p>
           </div>
 
           <form id="web-appointments-form" class="report-form">
@@ -70,6 +70,10 @@
                 <span>Fecha final</span>
                 <input type="date" id="web-end-date" required>
               </label>
+              <label class="field">
+                <span>Nombre o apellido (opcional)</span>
+                <input type="text" id="web-name" maxlength="80" autocomplete="off" placeholder="Filtrar por nombre del paciente">
+              </label>
             </div>
             <div class="report-actions">
               <button type="button" id="web-appointments-button" class="secondary-button">
@@ -77,7 +81,7 @@
                 <span class="button-sub">Por rango seleccionado</span>
               </button>
             </div>
-            <p id="web-report-status" class="form-message neutral lookup-message">Completa ambas fechas para consultar.</p>
+            <p id="web-report-status" class="form-message neutral lookup-message">Completa ambas fechas y filtra opcionalmente por nombre.</p>
           </form>
         </section>
 
