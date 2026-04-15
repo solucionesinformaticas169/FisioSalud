@@ -534,6 +534,7 @@ app.get("/api/reports/sessions", async (request, response) => {
               p.nombre,
               p.apellido,
               plan.diagnostico,
+              plan.observacion,
               TO_CHAR(det.fecha, 'YYYY-MM-DD') AS fecha,
               TO_CHAR(det.hora, 'HH24:MI') AS hora,
               det.tipo_terapia
@@ -570,7 +571,8 @@ app.get("/api/attendances/sessions", async (request, response) => {
               plan.cedula,
               p.nombre,
               p.apellido,
-              plan.diagnostico
+              plan.diagnostico,
+              plan.observacion
        FROM plan_sesion_detalles det
        INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
        INNER JOIN pacientes p ON p.cedula = plan.cedula

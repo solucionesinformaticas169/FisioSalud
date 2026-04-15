@@ -268,6 +268,7 @@ function renderSessionResults(sessions) {
         <strong>${formatDate(session.fecha)} · ${session.hora}</strong>
         <span>${session.cedula} · ${session.nombre} ${session.apellido}</span>
         <span>Diagnóstico: ${session.diagnostico || "Sin datos"}</span>
+        <span>Observación: ${session.observacion || "Sin datos"}</span>
       `;
       group.appendChild(row);
     });

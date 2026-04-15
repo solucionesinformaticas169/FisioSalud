@@ -10,6 +10,7 @@
     return;
   }
 
+  initializeDatePicker();
   dateInput.value = getTodayIso();
   form.addEventListener("submit", handleSubmit);
 
@@ -101,6 +102,7 @@
               <strong>${session.hora} · Sesion ${session.numero_sesion}</strong>
               <span>${session.cedula} · ${session.nombre} ${session.apellido}</span>
               <span>Diagnostico: ${session.diagnostico || "Sin datos"}</span>
+              <span>Observación: ${session.observacion || "Sin datos"}</span>
             </div>
             <div class="attendance-controls">
               <button type="button" class="attendance-toggle${session.estado_atencion === "ATENDIDO" ? " is-active" : ""}" data-status="ATENDIDO">
@@ -153,6 +155,27 @@
 
         results.appendChild(card);
       });
+  }
+
+  function initializeDatePicker() {
+    if (typeof flatpickr === "undefined" || !dateInput) {
+      return;
+    }
+
+    if (flatpickr.l10ns && flatpickr.l10ns.es) {
+      flatpickr.localize(flatpickr.l10ns.es);
+    }
+
+    flatpickr(dateInput, {
+      altInput: true,
+      altFormat: "d/m/Y",
+      dateFormat: "Y-m-d",
+      allowInput: false,
+      disableMobile: true,
+      monthSelectorType: "static",
+      prevArrow: "&#8249;",
+      nextArrow: "&#8250;"
+    });
   }
 
   function setStatus(text, level = "neutral") {

@@ -114,6 +114,7 @@
           <span><strong>Diagnóstico:</strong> ${escapeHtml(plan.diagnostico || "Sin datos")}</span>
           <span><strong>Fecha inicial:</strong> ${escapeHtml(formatDate(plan.fecha_inicial))}</span>
           <span><strong>Hora inicial:</strong> ${escapeHtml(plan.hora_inicial || "Sin hora")}</span>
+          <span><strong>Observación:</strong> ${escapeHtml(plan.observacion || "Sin observación registrada.")}</span>
         </div>
         <div class="clinical-history-stats">
           <span class="clinical-history-stat">
