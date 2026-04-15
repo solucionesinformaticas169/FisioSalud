@@ -353,17 +353,26 @@
   }
 
   function sanitizeNameInput() {
-    const sanitized = sanitizeName(nameInput.value);
+    const sanitized = sanitizeName(nameInput.value, { preserveTrailingSpace: true });
     if (nameInput.value !== sanitized) {
       nameInput.value = sanitized;
     }
   }
 
-  function sanitizeName(value) {
-    return String(value || "")
+  function sanitizeName(value, options = {}) {
+    const { preserveTrailingSpace = false } = options;
+    const rawValue = String(value || "");
+    const hasTrailingSpace = /\s$/.test(rawValue);
+    let sanitized = rawValue
+      .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "")
       .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 80);
+      .replace(/^\s+/g, "");
+
+    if (!preserveTrailingSpace || !hasTrailingSpace) {
+      sanitized = sanitized.trimEnd();
+    }
+
+    return sanitized.slice(0, 80);
   }
 
   function setStatus(text, level = "neutral") {

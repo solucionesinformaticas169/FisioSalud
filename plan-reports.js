@@ -26,6 +26,14 @@
     sessionButton.addEventListener("click", () => handleSessionReport());
   }
 
+  webName?.addEventListener("input", () => {
+    webName.value = sanitizeName(webName.value, { preserveTrailingSpace: true });
+  });
+
+  sessionName?.addEventListener("input", () => {
+    sessionName.value = sanitizeName(sessionName.value, { preserveTrailingSpace: true });
+  });
+
   function handleWebReport() {
     const startDate = String(webStartDate?.value || "").trim();
     const endDate = String(webEndDate?.value || "").trim();
@@ -252,8 +260,20 @@ function renderSessionResults(sessions) {
     return String(value || "").replace(/\D/g, "").slice(0, 10);
   }
 
-  function sanitizeName(value) {
-    return String(value || "").trim().replace(/\s+/g, " ").slice(0, 80);
+  function sanitizeName(value, options = {}) {
+    const { preserveTrailingSpace = false } = options;
+    const rawValue = String(value || "");
+    const hasTrailingSpace = /\s$/.test(rawValue);
+    let sanitized = rawValue
+      .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "")
+      .replace(/\s+/g, " ")
+      .replace(/^\s+/g, "");
+
+    if (!preserveTrailingSpace || !hasTrailingSpace) {
+      sanitized = sanitized.trimEnd();
+    }
+
+    return sanitized.slice(0, 80);
   }
 
   function setStatus(element, text, level) {

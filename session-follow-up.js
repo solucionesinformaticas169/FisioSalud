@@ -32,7 +32,7 @@ function initializeFollowUp() {
   });
 
   nameInput?.addEventListener("input", () => {
-    nameInput.value = sanitizeName(nameInput.value);
+    nameInput.value = sanitizeName(nameInput.value, { preserveTrailingSpace: true });
   });
 
   followUpForm.addEventListener("submit", async (event) => {
@@ -195,11 +195,20 @@ function toIsoDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-function sanitizeName(value) {
-  return String(value || "")
+function sanitizeName(value, options = {}) {
+  const { preserveTrailingSpace = false } = options;
+  const rawValue = String(value || "");
+  const hasTrailingSpace = /\s$/.test(rawValue);
+  let sanitized = rawValue
+    .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "")
     .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 80);
+    .replace(/^\s+/g, "");
+
+  if (!preserveTrailingSpace || !hasTrailingSpace) {
+    sanitized = sanitized.trimEnd();
+  }
+
+  return sanitized.slice(0, 80);
 }
 
 function escapeHtml(value) {

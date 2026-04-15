@@ -79,7 +79,8 @@ function buildPrimaryNav(session) {
 
   if (role === "PUBLIC") {
     entries.push(
-      buildDropdown("/agendamiento", "Agenda tu cita", [
+      buildPublicDropdown("Agenda tu cita", [
+        { href: "/agendamiento", label: "Agenda tu cita" },
         { href: "/consulta-cita", label: "Consulta tu cita" }
       ])
     );
@@ -87,50 +88,76 @@ function buildPrimaryNav(session) {
     return entries.join("");
   }
 
-  const ingresoItems = [];
-
-  if (role === "SUPERADMIN") {
-    ingresoItems.push({ href: "/agendamiento", label: "Agenda tu cita" });
-  }
-
-  ingresoItems.push(
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/plan-sesiones", label: "Plan de Sesiones" },
-    { href: "/consulta-citas", label: "Consulta de citas" },
-    { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
-    { href: "/reagendar-sesiones", label: "Reagendar sesiones" },
-    { href: "/atenciones", label: "Atenciones" },
-    { href: "/seguimiento-sesiones", label: "Seguimiento de sesiones" }
-  );
-
-  if (role === "ADMIN" || role === "SUPERADMIN") {
-    ingresoItems.splice(2, 0, { href: "/consulta-cita", label: "Consulta tu cita" });
-  }
-
-  if (role === "ADMIN" || role === "SUPERADMIN") {
-    ingresoItems.push({ href: "/edicion", label: "Edición" });
-  }
-
-  if (role === "SUPERADMIN") {
-    ingresoItems.push({ href: "/historial-accesos", label: "Historial de accesos" });
-  }
-
-  if (role === "SUPERADMIN") {
-    ingresoItems.push({ href: "/usuarios", label: "Usuarios" });
-  }
-
-  entries.push(buildDropdown("/ingreso-paciente", "Ingreso de Paciente", ingresoItems));
-  return entries.join("");
+  return buildRoleMenu(role);
 }
 
-function buildDropdown(primaryHref, label, items) {
+function buildRoleMenu(role) {
+  const itemsByRole = {
+    USER: [
+      { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
+      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/plan-sesiones", label: "Plan de Sesiones" },
+      { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
+      { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
+      { href: "/atenciones", label: "Atención de Sesiones" },
+      { href: "/seguimiento-sesiones", label: "Seguimiento de Sesiones" },
+      { href: "/dashboard", label: "Dashboard" }
+    ],
+    ADMIN: [
+      { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
+      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/plan-sesiones", label: "Plan de Sesiones" },
+      { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
+      { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
+      { href: "/atenciones", label: "Atención de Sesiones" },
+      { href: "/seguimiento-sesiones", label: "Seguimiento de Sesiones" },
+      { href: "/dashboard", label: "Dashboard" },
+      { href: "/edicion", label: "Edición" }
+    ],
+    SUPERADMIN: [
+      { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
+      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/agendamiento", label: "Agenda tu cita" },
+      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/plan-sesiones", label: "Plan de Sesiones" },
+      { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
+      { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
+      { href: "/atenciones", label: "Atención de Sesiones" },
+      { href: "/seguimiento-sesiones", label: "Seguimiento de Sesiones" },
+      { href: "/dashboard", label: "Dashboard" },
+      { href: "/historial-accesos", label: "Historial de accesos" },
+      { href: "/usuarios", label: "Usuarios" }
+    ]
+  };
+
+  return buildMenuDropdown("Menú", itemsByRole[role] || []);
+}
+
+function buildPublicDropdown(label, items) {
   const submenu = items
     .map((item) => `<a href="${item.href}">${item.label}</a>`)
     .join("");
 
   return `
     <span class="nav-with-submenu">
-      <a class="nav-primary-link" href="${primaryHref}">${label}</a>
+      <a class="nav-primary-link" href="${items[0]?.href || "#"}">${label}</a>
+      <div class="nav-submenu">
+        ${submenu}
+      </div>
+    </span>
+  `;
+}
+
+function buildMenuDropdown(label, items) {
+  const submenu = items
+    .map((item) => `<a href="${item.href}">${item.label}</a>`)
+    .join("");
+
+  return `
+    <span class="nav-with-submenu nav-with-submenu-menu">
+      <button class="nav-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false">${label}</button>
       <div class="nav-submenu">
         ${submenu}
       </div>

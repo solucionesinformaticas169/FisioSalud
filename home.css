@@ -156,6 +156,28 @@
   transition: color 0.2s ease;
 }
 
+.nav-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 1px solid rgba(15, 98, 254, 0.14);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(15, 98, 254, 0.1), rgba(22, 147, 221, 0.16));
+  color: #0d2f6f;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.nav-menu-trigger::after {
+  content: "▾";
+  font-size: 0.72rem;
+  transition: transform 0.2s ease;
+}
+
 .site-nav > a:not(#login-link)::after,
 .nav-with-submenu .nav-primary-link::after {
   content: "";
@@ -184,6 +206,19 @@
   color: #1693dd;
 }
 
+.nav-with-submenu-menu:hover .nav-menu-trigger,
+.nav-with-submenu-menu:focus-within .nav-menu-trigger {
+  color: #1693dd;
+  border-color: rgba(22, 147, 221, 0.28);
+  box-shadow: 0 12px 28px rgba(15, 98, 254, 0.12);
+  transform: translateY(-1px);
+}
+
+.nav-with-submenu-menu:hover .nav-menu-trigger::after,
+.nav-with-submenu-menu:focus-within .nav-menu-trigger::after {
+  transform: rotate(180deg);
+}
+
 .nav-with-submenu .nav-submenu {
   display: none;
   position: absolute;
@@ -199,6 +234,15 @@
   border: 1px solid rgba(18, 35, 66, 0.08);
   box-shadow: 0 22px 38px rgba(15, 46, 98, 0.2);
   z-index: 10;
+}
+
+.nav-with-submenu-menu .nav-submenu {
+  left: auto;
+  right: 0;
+  min-width: 280px;
+  max-width: min(360px, calc(100vw - 40px));
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
 }
 
 .nav-with-submenu:hover .nav-submenu,
@@ -1697,7 +1741,8 @@
   }
 
   .site-nav a,
-  .nav-with-submenu .nav-primary-link {
+  .nav-with-submenu .nav-primary-link,
+  .nav-menu-trigger {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -1707,6 +1752,11 @@
     border-radius: 18px;
     background: rgba(15, 98, 254, 0.06);
     margin-bottom: 4px;
+  }
+
+  .nav-menu-trigger {
+    border: 0;
+    box-shadow: none;
   }
 
   .nav-with-submenu {
@@ -1730,6 +1780,13 @@
     padding: 8px 0 0 0;
     gap: 6px;
     border: 0;
+  }
+
+  .nav-with-submenu-menu .nav-submenu {
+    min-width: 100%;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
   }
 
   .nav-with-submenu {
