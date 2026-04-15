@@ -692,7 +692,8 @@ app.get("/api/session-plans/search", async (request, response) => {
               plan.cedula,
               p.nombre,
               p.apellido,
-              plan.diagnostico
+              plan.diagnostico,
+              plan.observacion
        FROM plan_sesion_detalles det
        INNER JOIN planes_sesiones plan ON plan.id = det.plan_id
        INNER JOIN pacientes p ON p.cedula = plan.cedula
@@ -1235,6 +1236,7 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
               p.nombre,
               p.apellido,
               plan.diagnostico,
+              plan.observacion,
               det.tipo_terapia,
               COUNT(*)::int AS total_sesiones,
               COUNT(*) FILTER (WHERE det.estado_atencion = 'ATENDIDO')::int AS atendidas,
@@ -1246,7 +1248,7 @@ app.get("/api/reports/session-follow-up", async (request, response) => {
        INNER JOIN pacientes p ON p.cedula = plan.cedula
        WHERE det.fecha BETWEEN $1 AND $2
          ${filters.length ? `AND ${filters.join("\n         AND ")}` : ""}
-       GROUP BY plan.id, plan.cedula, p.nombre, p.apellido, plan.diagnostico, det.tipo_terapia
+       GROUP BY plan.id, plan.cedula, p.nombre, p.apellido, plan.diagnostico, plan.observacion, det.tipo_terapia
        ORDER BY p.apellido ASC, p.nombre ASC, plan.id ASC`,
       params
     );

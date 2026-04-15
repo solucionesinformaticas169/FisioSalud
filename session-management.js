@@ -103,6 +103,7 @@
         <strong>Sesion ${session.numero_sesion} · ${formatDateReadable(session.fecha)} · ${session.hora}</strong>
         <span>${session.cedula} · ${session.nombre} ${session.apellido}</span>
         <span>Tipo: ${formatTherapyLabel(session.tipo_terapia)} · Diagnostico: ${session.diagnostico || "Sin datos"}</span>
+        <span>Observación: ${session.observacion || "Sin datos"}</span>
       `;
 
       const actions = document.createElement("div");

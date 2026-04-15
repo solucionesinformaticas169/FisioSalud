@@ -158,6 +158,7 @@ function renderResults(summaries) {
             <p class="section-label">Paciente</p>
             <h4>${escapeHtml(`${summary.apellido} ${summary.nombre}`)}</h4>
             <p class="follow-up-meta">${escapeHtml(summary.cedula)} · ${escapeHtml(summary.tipo_terapia)} · Diagnostico: ${escapeHtml(summary.diagnostico || "SIN DATO")}</p>
+            <p class="follow-up-meta">Observación: ${escapeHtml(summary.observacion || "SIN DATO")}</p>
           </div>
           <span class="badge">${escapeHtml(progressLabel)}</span>
         </div>
