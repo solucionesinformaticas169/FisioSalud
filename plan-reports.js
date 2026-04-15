@@ -18,6 +18,8 @@
   const webButton = document.getElementById("web-appointments-button");
   const sessionButton = document.getElementById("session-report-button");
 
+  initializeDatePickers();
+
   if (webButton) {
     webButton.addEventListener("click", () => handleWebReport());
   }
@@ -33,6 +35,37 @@
   sessionName?.addEventListener("input", () => {
     sessionName.value = sanitizeName(sessionName.value, { preserveTrailingSpace: true });
   });
+
+  function initializeDatePickers() {
+    if (typeof flatpickr === "undefined") {
+      return;
+    }
+
+    if (flatpickr.l10ns && flatpickr.l10ns.es) {
+      flatpickr.localize(flatpickr.l10ns.es);
+    }
+
+    const sharedConfig = {
+      altInput: true,
+      altFormat: "d/m/Y",
+      dateFormat: "Y-m-d",
+      allowInput: false,
+      disableMobile: true,
+      monthSelectorType: "static",
+      prevArrow: "&#8249;",
+      nextArrow: "&#8250;"
+    };
+
+    if (webStartDate && webEndDate) {
+      flatpickr(webStartDate, sharedConfig);
+      flatpickr(webEndDate, sharedConfig);
+    }
+
+    if (sessionStartDate && sessionEndDate) {
+      flatpickr(sessionStartDate, sharedConfig);
+      flatpickr(sessionEndDate, sharedConfig);
+    }
+  }
 
   function handleWebReport() {
     const startDate = String(webStartDate?.value || "").trim();

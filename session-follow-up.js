@@ -19,6 +19,7 @@ function initializeFollowUp() {
     return;
   }
 
+  initializeDatePickers();
   setDefaultDates();
 
   cedulaInput.addEventListener("input", () => {
@@ -39,6 +40,30 @@ function initializeFollowUp() {
     event.preventDefault();
     await loadFollowUp();
   });
+}
+
+function initializeDatePickers() {
+  if (typeof flatpickr === "undefined" || !startDateInput || !endDateInput) {
+    return;
+  }
+
+  if (flatpickr.l10ns && flatpickr.l10ns.es) {
+    flatpickr.localize(flatpickr.l10ns.es);
+  }
+
+  const sharedConfig = {
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    allowInput: false,
+    disableMobile: true,
+    monthSelectorType: "static",
+    prevArrow: "&#8249;",
+    nextArrow: "&#8250;"
+  };
+
+  flatpickr(startDateInput, sharedConfig);
+  flatpickr(endDateInput, sharedConfig);
 }
 
 function setDefaultDates() {

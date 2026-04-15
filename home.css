@@ -85,8 +85,9 @@
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 32px;
-  flex-wrap: wrap;
+  gap: 24px;
+  flex-wrap: nowrap;
+  margin-left: auto;
 }
 
 .site-nav a,
@@ -97,11 +98,41 @@
 }
 
 .welcome-status {
+  margin-left: auto;
   color: #1693dd;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.78rem;
+  font-size: 0.62rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+  text-align: right;
+  width: 160px;
+  flex: 0 0 160px;
+  opacity: 0.9;
+}
+
+.welcome-status:empty {
+  display: none;
+}
+
+.welcome-name,
+.welcome-role {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.welcome-name {
   white-space: nowrap;
+}
+
+.welcome-role {
+  font-size: 0.72rem;
+  white-space: nowrap;
+  opacity: 0.82;
 }
 
 .site-nav a {
@@ -160,21 +191,37 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 46px;
-  padding: 10px 18px;
-  border: 1px solid rgba(15, 98, 254, 0.14);
-  border-radius: 999px;
-  background: linear-gradient(135deg, rgba(15, 98, 254, 0.1), rgba(22, 147, 221, 0.16));
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #0d2f6f;
   font-weight: 700;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+  transition: color 0.2s ease;
 }
 
 .nav-menu-trigger::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1693dd, #0f62fe);
+  transform: translateX(-50%);
+  transition: width 0.22s ease, opacity 0.22s ease;
+  opacity: 0;
+}
+
+.nav-menu-trigger::before {
   content: "▾";
   font-size: 0.72rem;
+  order: 2;
   transition: transform 0.2s ease;
 }
 
@@ -209,13 +256,16 @@
 .nav-with-submenu-menu:hover .nav-menu-trigger,
 .nav-with-submenu-menu:focus-within .nav-menu-trigger {
   color: #1693dd;
-  border-color: rgba(22, 147, 221, 0.28);
-  box-shadow: 0 12px 28px rgba(15, 98, 254, 0.12);
-  transform: translateY(-1px);
 }
 
 .nav-with-submenu-menu:hover .nav-menu-trigger::after,
 .nav-with-submenu-menu:focus-within .nav-menu-trigger::after {
+  width: 100%;
+  opacity: 1;
+}
+
+.nav-with-submenu-menu:hover .nav-menu-trigger::before,
+.nav-with-submenu-menu:focus-within .nav-menu-trigger::before {
   transform: rotate(180deg);
 }
 
@@ -269,8 +319,9 @@
 #role-link-group {
   display: inline-flex;
   align-items: center;
-  gap: 34px;
-  flex-wrap: wrap;
+  gap: 28px;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .nav-toggle {
@@ -1729,6 +1780,7 @@
     border: 1px solid rgba(18, 35, 66, 0.08);
     box-shadow: 0 18px 46px rgba(41, 68, 116, 0.16);
     gap: 10px;
+    justify-content: flex-start;
   }
 
   #public-link-group,
@@ -1757,6 +1809,9 @@
   .nav-menu-trigger {
     border: 0;
     box-shadow: none;
+    background: rgba(15, 98, 254, 0.06);
+    border-radius: 18px;
+    padding: 12px 18px;
   }
 
   .nav-with-submenu {
@@ -1810,7 +1865,16 @@
   }
 
   .welcome-status {
-    white-space: normal;
+    margin-left: 0;
+    width: auto;
+    flex: 0 1 auto;
+    justify-items: start;
+    text-align: left;
+    font-size: 0.7rem;
+  }
+
+  .welcome-role {
+    font-size: 0.74rem;
   }
 
   .site-nav.open {

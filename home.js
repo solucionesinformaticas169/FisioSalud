@@ -188,8 +188,8 @@ function renderRoleLinks() {
   }
 
   if (welcomeStatus) {
-    welcomeStatus.textContent = session
-      ? `Bienvenido, ${session.name || session.username || ""} (${window.AppAuth.getRoleLabel(session.role)})`
+    welcomeStatus.innerHTML = session
+      ? `<span class="welcome-name">${escapeHtml(session.name || session.username || "")}</span><span class="welcome-role">(${escapeHtml(window.AppAuth.getRoleLabel(session.role))})</span>`
       : "";
   }
 
@@ -246,7 +246,8 @@ function buildPrimaryNav(session) {
     return entries.join("");
   }
 
-  return buildRoleMenu(role);
+  entries.push(buildRoleMenu(role));
+  return entries.join("");
 }
 
 function buildRoleMenu(role) {
@@ -254,7 +255,7 @@ function buildRoleMenu(role) {
     USER: [
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
       { href: "/historia-clinica", label: "Historia Clínica" },
-      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/consulta-citas", label: "Consulta/Atención de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },
       { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
       { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
@@ -265,7 +266,7 @@ function buildRoleMenu(role) {
     ADMIN: [
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
       { href: "/historia-clinica", label: "Historia Clínica" },
-      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/consulta-citas", label: "Consulta/Atención de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },
       { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
       { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
@@ -278,7 +279,7 @@ function buildRoleMenu(role) {
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
       { href: "/historia-clinica", label: "Historia Clínica" },
       { href: "/agendamiento", label: "Agenda tu cita" },
-      { href: "/consulta-citas", label: "Consulta de Citas" },
+      { href: "/consulta-citas", label: "Consulta/Atención de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },
       { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
       { href: "/reagendar-sesiones", label: "Reagendar Sesiones" },
@@ -290,7 +291,7 @@ function buildRoleMenu(role) {
     ]
   };
 
-  return buildMenuDropdown("Menú", itemsByRole[role] || []);
+  return buildPublicDropdown("Menú", itemsByRole[role] || []);
 }
 
 function buildPublicDropdown(label, items) {
@@ -301,21 +302,6 @@ function buildPublicDropdown(label, items) {
   return `
     <span class="nav-with-submenu">
       <a class="nav-primary-link" href="${items[0]?.href || "#"}">${label}</a>
-      <div class="nav-submenu">
-        ${submenu}
-      </div>
-    </span>
-  `;
-}
-
-function buildMenuDropdown(label, items) {
-  const submenu = items
-    .map((item) => `<a href="${item.href}">${item.label}</a>`)
-    .join("");
-
-  return `
-    <span class="nav-with-submenu nav-with-submenu-menu">
-      <button class="nav-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false">${label}</button>
       <div class="nav-submenu">
         ${submenu}
       </div>
