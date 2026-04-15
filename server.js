@@ -705,6 +705,139 @@ app.get("/api/session-plans/search", async (request, response) => {
   }
 });
 
+app.get("/api/clinical-history/search", async (request, response) => {
+  const cedula = String(request.query.cedula || "").replace(/\D/g, "");
+  const name = String(request.query.name || "").trim().toUpperCase();
+
+  if (!cedula && !name) {
+    return response.status(400).json({ message: "Ingresa una cedula o un nombre para consultar." });
+  }
+
+  if (cedula && !/^\d{10}$/.test(cedula)) {
+    return response.status(400).json({ message: "La cedula debe tener 10 digitos." });
+  }
+
+  try {
+    const params = [];
+    const filters = [];
+
+    if (cedula) {
+      params.push(cedula);
+      filters.push(`plan.cedula = $${params.length}`);
+    }
+
+    if (name) {
+      params.push(`%${name}%`);
+      filters.push(`(
+        CONCAT_WS(' ', p.nombre, p.apellido) ILIKE $${params.length}
+        OR p.nombre ILIKE $${params.length}
+        OR p.apellido ILIKE $${params.length}
+      )`);
+    }
+
+    const whereClause = filters.length ? `WHERE ${filters.join("\n         AND ")}` : "";
+    const result = await pool.query(
+      `SELECT plan.id,
+              plan.cedula,
+              p.nombre,
+              p.apellido,
+              plan.diagnostico,
+              plan.numero_sesiones,
+              TO_CHAR(plan.fecha_inicial, 'YYYY-MM-DD') AS fecha_inicial,
+              TO_CHAR(plan.hora_inicial, 'HH24:MI') AS hora_inicial,
+              plan.tipo_terapia,
+              plan.observacion,
+              TO_CHAR(plan.created_at, 'YYYY-MM-DD HH24:MI') AS creado_en,
+              COUNT(det.id)::int AS total_sesiones,
+              COUNT(*) FILTER (WHERE det.estado_atencion = 'ATENDIDO')::int AS sesiones_atendidas,
+              COUNT(*) FILTER (WHERE det.estado_atencion = 'NO_ATENDIDO')::int AS sesiones_no_atendidas
+       FROM planes_sesiones plan
+       INNER JOIN pacientes p ON p.cedula = plan.cedula
+       LEFT JOIN plan_sesion_detalles det ON det.plan_id = plan.id
+       ${whereClause}
+       GROUP BY plan.id, plan.cedula, p.nombre, p.apellido, plan.diagnostico, plan.numero_sesiones,
+                plan.fecha_inicial, plan.hora_inicial, plan.tipo_terapia, plan.observacion, plan.created_at
+       ORDER BY p.apellido ASC, p.nombre ASC, plan.created_at DESC, plan.id DESC`,
+      params
+    );
+
+    return response.json({ plans: result.rows });
+  } catch (error) {
+    return response.status(500).json({ message: "No se pudo consultar la historia clinica del paciente." });
+  }
+});
+
+app.get("/api/clinical-history/plans/:planId", async (request, response) => {
+  const planId = Number(request.params.planId || 0);
+
+  if (!Number.isInteger(planId) || planId <= 0) {
+    return response.status(400).json({ message: "El plan solicitado no es valido." });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT plan.id AS plan_id,
+              plan.cedula,
+              p.nombre,
+              p.apellido,
+              plan.diagnostico,
+              plan.numero_sesiones,
+              TO_CHAR(plan.fecha_inicial, 'YYYY-MM-DD') AS fecha_inicial,
+              TO_CHAR(plan.hora_inicial, 'HH24:MI') AS hora_inicial,
+              plan.tipo_terapia,
+              plan.observacion,
+              det.id,
+              det.numero_sesion,
+              TO_CHAR(det.fecha, 'YYYY-MM-DD') AS fecha,
+              TO_CHAR(det.hora, 'HH24:MI') AS hora,
+              det.tipo_terapia AS detalle_tipo_terapia,
+              det.estado_atencion
+       FROM planes_sesiones plan
+       INNER JOIN pacientes p ON p.cedula = plan.cedula
+       LEFT JOIN plan_sesion_detalles det ON det.plan_id = plan.id
+       WHERE plan.id = $1
+       ORDER BY det.numero_sesion ASC, det.fecha ASC, det.hora ASC`,
+      [planId]
+    );
+
+    if (result.rowCount === 0) {
+      return response.status(404).json({ message: "No se encontro el plan de sesiones solicitado." });
+    }
+
+    const firstRow = result.rows[0];
+    const sessions = result.rows
+      .filter((row) => row.id)
+      .map((row) => ({
+        id: row.id,
+        numero_sesion: row.numero_sesion,
+        fecha: row.fecha,
+        hora: row.hora,
+        tipo_terapia: row.detalle_tipo_terapia,
+        estado_atencion: row.estado_atencion
+      }));
+
+    return response.json({
+      plan: {
+        id: firstRow.plan_id,
+        cedula: firstRow.cedula,
+        nombre: firstRow.nombre,
+        apellido: firstRow.apellido,
+        diagnostico: firstRow.diagnostico,
+        numero_sesiones: firstRow.numero_sesiones,
+        fecha_inicial: firstRow.fecha_inicial,
+        hora_inicial: firstRow.hora_inicial,
+        tipo_terapia: firstRow.tipo_terapia,
+        observacion: firstRow.observacion,
+        sesiones_atendidas: sessions.filter((session) => session.estado_atencion === "ATENDIDO").length,
+        sesiones_no_atendidas: sessions.filter((session) => session.estado_atencion === "NO_ATENDIDO").length
+      },
+      sessions
+    });
+  } catch (error) {
+    return response.status(500).json({ message: "No se pudo consultar el detalle del plan." });
+  }
+});
+
 app.get("/api/session-plans/available-times", async (request, response) => {
   const date = String(request.query.date || "").trim();
   const therapyType = String(request.query.tipoTerapia || "").trim();
@@ -1756,8 +1889,12 @@ app.get("/seguimiento-sesiones", (_request, response) => {
   response.sendFile(path.join(__dirname, "seguimiento-sesiones.html"));
 });
 
+app.get("/historia-clinica", (_request, response) => {
+  response.sendFile(path.join(__dirname, "historia-clinica.html"));
+});
+
 app.get("/consultas", (_request, response) => {
-  response.redirect("/consulta-citas");
+  response.redirect("/historia-clinica");
 });
 
 app.get("/login", (_request, response) => {

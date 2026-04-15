@@ -237,7 +237,7 @@ function buildPrimaryNav(session) {
 
   if (role === "PUBLIC") {
     entries.push(
-      buildPublicDropdown("Agenda tu cita", [
+      buildPublicDropdown("Menú", [
         { href: "/agendamiento", label: "Agenda tu cita" },
         { href: "/consulta-cita", label: "Consulta tu cita" }
       ])
@@ -253,7 +253,7 @@ function buildRoleMenu(role) {
   const itemsByRole = {
     USER: [
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
-      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/historia-clinica", label: "Historia Clínica" },
       { href: "/consulta-citas", label: "Consulta de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },
       { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
@@ -264,7 +264,7 @@ function buildRoleMenu(role) {
     ],
     ADMIN: [
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
-      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/historia-clinica", label: "Historia Clínica" },
       { href: "/consulta-citas", label: "Consulta de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },
       { href: "/consulta-sesiones", label: "Consulta de Sesiones" },
@@ -276,7 +276,7 @@ function buildRoleMenu(role) {
     ],
     SUPERADMIN: [
       { href: "/ingreso-paciente", label: "Ingreso de Paciente" },
-      { href: "/consultas", label: "Historia Clínica" },
+      { href: "/historia-clinica", label: "Historia Clínica" },
       { href: "/agendamiento", label: "Agenda tu cita" },
       { href: "/consulta-citas", label: "Consulta de Citas" },
       { href: "/plan-sesiones", label: "Plan de Sesiones" },

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historia Clínica | Fisio Salud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-body">
+  <header class="site-header">
+    <div class="site-shell nav-shell">
+      <a class="brand-mark" href="/">
+        <img id="brand-logo" src="/assets/logo.png" alt="Fisio Salud Clinica la Paz">
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <span id="public-link-group">
+          <a href="/">Inicio</a>
+          <a href="/#conocenos">Conocenos</a>
+          <a href="/#contactanos">Contactanos</a>
+          <span class="nav-with-submenu">
+            <a href="/agendamiento">Agenda tu cita</a>
+            <div class="nav-submenu">
+              <a href="/consulta-cita">Consulta tu cita</a>
+            </div>
+          </span>
+        </span>
+        <span id="role-link-group"></span>
+        <span id="welcome-status" class="welcome-status"></span>
+        <a id="login-link" href="/login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <p class="section-label">Expediente</p>
+            <h2>Historia Clínica</h2>
+          </div>
+          <span id="clinical-history-summary" class="badge subtle">Sin consulta</span>
+        </div>
+
+        <section class="report-card">
+          <div class="report-card-head">
+            <p class="section-label">Búsqueda</p>
+            <h3>Consulta por paciente</h3>
+            <p class="report-card-subtitle">Busca por nombre o número de cédula y revisa los planes de sesiones registrados del paciente.</p>
+          </div>
+
+          <form id="clinical-history-form" class="report-form">
+            <div class="form-grid">
+              <label class="field">
+                <span>Cédula (opcional)</span>
+                <input type="text" id="clinical-history-cedula" maxlength="10" inputmode="numeric" autocomplete="off" placeholder="Ingresa 10 digitos">
+              </label>
+              <label class="field">
+                <span>Nombre o apellido (opcional)</span>
+                <input type="text" id="clinical-history-name" maxlength="80" autocomplete="off" placeholder="Busca por nombre del paciente">
+              </label>
+            </div>
+            <div class="report-actions">
+              <button type="submit" id="clinical-history-button" class="secondary-button">
+                <span class="button-main">Buscar historia clínica</span>
+                <span class="button-sub">Planes y sesiones registradas</span>
+              </button>
+            </div>
+            <p id="clinical-history-status" class="form-message neutral lookup-message">Ingresa una cédula o un nombre para consultar.</p>
+          </form>
+        </section>
+
+        <section class="results-card">
+          <div class="results-head">
+            <div>
+              <p class="section-label">Planes</p>
+              <h3>Planes de sesiones encontrados</h3>
+            </div>
+            <span id="clinical-history-count" class="badge subtle">0 planes</span>
+          </div>
+          <div id="clinical-history-results" class="results-container">
+            <p class="results-placeholder">Los planes del paciente aparecerán aquí.</p>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    window.AppAuth.guardPage("USER");
+  </script>
+  <script src="shared-nav.js"></script>
+  <script src="historia-clinica.js"></script>
+</body>
+</html>
