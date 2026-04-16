@@ -54,6 +54,7 @@ const META_WHATSAPP_ACCESS_TOKEN = process.env.META_WHATSAPP_ACCESS_TOKEN || "";
 const META_WHATSAPP_VERIFY_TOKEN = process.env.META_WHATSAPP_VERIFY_TOKEN || "";
 const META_TEMPLATE_LANGUAGE = process.env.META_TEMPLATE_LANGUAGE || "es";
 const META_TEMPLATE_CONFIRMACION_CITA = process.env.META_TEMPLATE_CONFIRMACION_CITA || "confirmacion_cita";
+const META_TEMPLATE_NOTIFICACION_CITA_ADMIN = process.env.META_TEMPLATE_NOTIFICACION_CITA_ADMIN || "notificacion_cita_admin1";
 const META_TEMPLATE_REAGENDAMIENTO_CITA = process.env.META_TEMPLATE_REAGENDAMIENTO_CITA || "reagendamiento_cita";
 const META_TEMPLATE_CANCELACION_CITA = process.env.META_TEMPLATE_CANCELACION_CITA || "cancelacion_cita1";
 const META_TEMPLATE_NOTIFICACION_REAGENDAMIENTO_ADMIN = process.env.META_TEMPLATE_NOTIFICACION_REAGENDAMIENTO_ADMIN || "notificacion_reagendamiento_admin";
@@ -3402,8 +3403,15 @@ async function sendAppointmentAdminWhatsappMessage(payload) {
 
   return sendMetaTemplateMessage({
     phone: APPOINTMENT_NOTIFY_WHATSAPP,
-    templateName: META_TEMPLATE_CONFIRMACION_CITA,
-    parameters: [`Nueva cita web: ${patientName}`, formattedDate, payload.hora, observationText]
+    templateName: META_TEMPLATE_NOTIFICACION_CITA_ADMIN,
+    parameters: [
+      patientName,
+      payload.cedula,
+      formattedDate,
+      payload.hora,
+      observationText,
+      payload.telefono
+    ]
   });
 }
 
