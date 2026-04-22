@@ -1762,6 +1762,11 @@
     width: min(100% - 24px, 1480px);
   }
 
+  .popup-overlay {
+    padding: 12px;
+    align-items: center;
+  }
+
   .nav-toggle {
     display: inline-block;
   }
@@ -1931,11 +1936,17 @@
   }
 
   .popup-card {
+    width: min(92vw, 430px);
     grid-template-columns: 1fr;
+    border-radius: 24px;
+    max-height: min(82svh, 700px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .popup-visual {
-    min-height: 280px;
+    min-height: 0;
+    aspect-ratio: 1.35 / 1;
   }
 
   .edit-grid {
@@ -1946,5 +1957,48 @@
   .section-title-row {
     flex-direction: column;
     align-items: start;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-overlay {
+    padding: 10px;
+  }
+
+  .popup-card {
+    width: min(90vw, 350px);
+    border-radius: 22px;
+    max-height: min(78svh, 620px);
+  }
+
+  .popup-copy {
+    gap: 10px;
+    padding: 20px 18px 18px;
+  }
+
+  .popup-copy h3 {
+    max-width: 11ch;
+    font-size: clamp(1.15rem, 7vw, 1.8rem);
+    line-height: 1.02;
+  }
+
+  .popup-copy p:last-of-type {
+    max-width: none;
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .popup-copy .hero-button.primary {
+    width: 100%;
+    margin-top: 6px;
+    min-height: 44px;
+  }
+
+  .popup-close {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
   }
 }
